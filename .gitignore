@@ -1,0 +1,21 @@
+node_modules/
+dist/
+release/
+.cache/
+test-results/
+playwright-report/
+.DS_Store
+
+# Private source material and local editorial reviews; web derivatives live in public/.
+/PESCADILLA/
+/MANUELA/
+/MARNI/
+/LEON LEVINSTEIN/
+/review/
+/*.pdf
+/*.png
+/AGENTS.md
+/.jcodemunch.jsonc
+.env
+.env.*
+!.env.example
