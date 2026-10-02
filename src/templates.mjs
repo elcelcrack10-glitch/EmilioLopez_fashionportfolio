@@ -35,7 +35,7 @@ export function renderer(lang, manifest) {
       )
       .join("");
   const footer = (isAbout = false) =>
-    `<footer id="contacto"><div class="footer-top"><p class="eyebrow">${words("¿Hablamos?", "Let’s talk")}</p><a class="contact-heading" href="mailto:${contact.email}">${words("Hagamos algo.", "Let’s make something.")} ${arrow}</a></div><div class="footer-bottom"><a href="mailto:${contact.email}">${contact.email}</a><div class="socials">${socials()}</div><span>© ${new Date().getFullYear()} Emilio Lopez</span><a href="#top">${words("Volver arriba", "Back to top")} ↑</a></div>${isAbout ? '<p class="persona-signature" aria-hidden="true">EMILIO LOPEZ</p>' : ""}</footer>`;
+    `<footer id="contacto"><div class="footer-top"><p class="eyebrow">${words("¿Hablamos?", "Let’s talk")}</p><a class="contact-heading" href="mailto:${contact.email}">${words("Contacto", "Contact")} ${arrow}</a></div><div class="footer-bottom"><a href="mailto:${contact.email}">${contact.email}</a><div class="socials">${socials()}</div><span>© ${new Date().getFullYear()} Emilio Lopez</span><a href="#top">${words("Volver arriba", "Back to top")} ↑</a></div>${isAbout ? '<p class="persona-signature" aria-hidden="true">EMILIO LOPEZ</p>' : ""}</footer>`;
   function shell(slug, title, description, content, cover) {
     const isAbout = slug === "sobre-mi";
     const isProject = projects.some((project) => project.slug === slug);
