@@ -18,7 +18,18 @@ test("both views, language switch and direct links preserve context", async ({
     .evaluateAll((nodes) =>
       nodes.map((n) => Math.round(n.getBoundingClientRect().top)),
     );
-  expect(new Set(tops).size).toBe(1);
+  expect(new Set(tops).size).toBe(2);
+  for (const card of await page.locator(".project-card").all()) {
+    const photos = card.locator(".project-art .stack-photo");
+    await expect(photos).toHaveCount(3);
+    const sources = await photos
+      .locator("img")
+      .evaluateAll((images) =>
+        images.map((image) => image.getAttribute("src")),
+      );
+    expect(new Set(sources).size).toBe(3);
+    for (const photo of await photos.all()) await expect(photo).toBeVisible();
+  }
   await page.getByRole("link", { name: "EN", exact: true }).click();
   await expect(page).toHaveURL(/\/en\/\?view=index/);
   await expect(page.locator(".projects")).toHaveAttribute(
@@ -34,6 +45,43 @@ test("both views, language switch and direct links preserve context", async ({
     "src",
     /colores-photo-2-/,
   );
+});
+
+test("photo compositions stay inside each project and the sticky switch returns to the index", async ({
+  page,
+}) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  for (const width of [320, 768, 1440, 1920]) {
+    await page.setViewportSize({ width, height: 1000 });
+    await page.goto("/");
+    for (const card of await page.locator(".project-card").all()) {
+      const ending = await card.locator(".project-chapter-end").boundingBox();
+      for (const photo of await card.locator(".stack-photo").all()) {
+        const bounds = await photo.boundingBox();
+        expect(bounds.y + bounds.height).toBeLessThan(ending.y);
+      }
+    }
+  }
+  await page
+    .locator('.project-card[data-project="colores"]')
+    .scrollIntoViewIfNeeded();
+  await page.getByRole("button", { name: "Índice", exact: true }).click();
+  await expect
+    .poll(async () => (await page.locator(".work-toolbar").boundingBox()).y)
+    .toBe(0);
+  const cardLink = page.getByRole("link", {
+    name: "Ver Pescadilla",
+    exact: true,
+  });
+  await cardLink.focus();
+  expect(
+    await cardLink
+      .locator(".stack-photo")
+      .first()
+      .evaluate((el) => getComputedStyle(el).transitionDuration),
+  ).toBe("0s");
+  await page.keyboard.press("Enter");
+  await expect(page).toHaveURL(/\/pescadilla\//);
 });
 
 test("gallery supports keyboard, focus return and ordered process", async ({

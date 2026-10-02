@@ -195,3 +195,37 @@ Pescadilla. Finish with a nearly full-width `EMILIO LOPEZ` signature.
 On mobile keep readable paragraphs and uncut names, stack the biography and
 experience rows, and preserve all navigation and language-switch behaviour.
 No autoplay, scroll hijacking, fake portrait, borrowed imagery or new fonts.
+
+## Redesign — 2 October 2026: a collection of four visual worlds
+
+This direction supersedes the shared image-and-text Journal and single-cover
+Index. Reference: local `referencia indice.pdf`, one page showing three-image
+project clusters on a neutral canvas. Keep the useful overlapping-photo
+composition; use Emilio's own work, typography and project identities.
+
+The homepage becomes a quiet typographic introduction followed immediately
+by the two ways of exploring the work. Journal chapters each have their own
+paper/colour, typographic scale, photo arrangement and small dossier excerpt.
+The Index is a two-column contact sheet of three-image clusters (one column
+on narrow phones); all three photos remain visible without hover. Hover and
+keyboard focus gently open the cluster, with reduced motion respected.
+
+Source documents re-inspected via complete contact sheets:
+- Pescadilla dossier pp. 14–19, 24–25, 32–35; artbook pp. 14–17, 30–36:
+  a research notebook, red headings, cream paper, olive and printed matter.
+- Manuela pp. 1–2, 13–15, 20, 24–33: poster-like typography, theatrical
+  burgundy, black/white contrasts, photographic diptychs and bold chapters.
+- Feel Marni pp. 1–8, 12–27: athletic rhythm, red/navy bands, yellow circles,
+  horizontal running images and illustrated collection lineups.
+- COLORES pp. 4–5, 10–18, 25–31: painted swatches, modular colour studies,
+  architectural rectangles, warm paper, clay and olive grounds.
+
+The internal project openings and chapter compositions reinforce those same
+identities. Original final-photo order, cover choices, credits, notes, film,
+process sequence and approved Spanish/English biography remain intact.
+Never turn an academic brand interpretation into an official collaboration.
+
+Primary actions: open a project from either view, switch view, read its
+editorial/concept/process, return to the Index. Preserve URL state, keyboard
+navigation and static/no-JS content. Use existing responsive AVIF/WebP media,
+local Albert Sans and native CSS; no autoplay or animation library.

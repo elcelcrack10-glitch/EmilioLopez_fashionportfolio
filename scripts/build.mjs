@@ -13,7 +13,12 @@ try {
 }
 await mkdir(output, { recursive: true });
 await cp("public", output, { recursive: true });
-for (const name of ["style.css", "project-worlds.css", "persona.css"]) {
+for (const name of [
+  "style.css",
+  "project-worlds.css",
+  "persona.css",
+  "archive.css",
+]) {
   await writeFile(
     `${output}/${name}`,
     deploymentCSS(await readFile(`src/${name}`, "utf8")),

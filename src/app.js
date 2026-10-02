@@ -21,6 +21,8 @@ viewButtons.forEach((button) =>
     else url.searchParams.delete("view");
     history.replaceState(null, "", url);
     applyView();
+    // A shorter index must not leave the reader stranded below its projects.
+    document.querySelector("#trabajos").scrollIntoView({ behavior: "instant" });
   }),
 );
 window.addEventListener("popstate", applyView);

@@ -1,0 +1,941 @@
+/* Four dossiers, two ways of browsing. The photo clusters refer to the
+   supplied index PDF; every project keeps its own visual language. */
+html:has(.home-page) {
+  scroll-padding-top: 0;
+}
+.home-page {
+  --paper: #f3f1ec;
+  --ink: #272722;
+  --muted: #64635a;
+}
+.home-page .site-header {
+  position: relative;
+  inset: auto;
+  background: var(--paper);
+  color: var(--ink);
+  border-bottom: 1px solid var(--line);
+}
+.home-page .site-header .wordmark span {
+  color: var(--muted);
+}
+.home-page .site-header a {
+  text-shadow: none;
+}
+.home-page .site-header .languages,
+.home-page .site-header .languages a,
+.home-page .site-header .languages > span {
+  color: var(--muted);
+}
+.home-page .site-header .languages a[aria-current] {
+  color: var(--ink);
+}
+.archive-intro {
+  padding: 64px var(--page) 56px;
+}
+.archive-heading,
+.archive-description {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
+}
+.archive-intro h1 {
+  font-size: clamp(64px, 13.5vw, 216px);
+  line-height: 1;
+  font-weight: 350;
+  letter-spacing: -0.065em;
+  margin: 32px 0;
+}
+.archive-description {
+  font-size: 15px;
+  line-height: 1.6;
+}
+.home-page .work-section {
+  margin: 0;
+}
+.home-page .work-toolbar {
+  margin: 0;
+  padding: 12px var(--page);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  background: var(--paper);
+  position: sticky;
+  top: 0;
+  z-index: 9;
+}
+.home-page .view-switch button {
+  min-height: 44px;
+}
+.home-page #trabajos {
+  scroll-margin-top: 0;
+}
+.project-card {
+  --world-paper: #eee6d4;
+  --world-ink: #343527;
+  --world-muted: #5b5b49;
+  --world-accent: #8e3027;
+}
+.project-card[data-project="manuela"] {
+  --world-paper: #211d1c;
+  --world-ink: #f5f1e9;
+  --world-muted: #cec5b7;
+  --world-accent: #8b2431;
+}
+.project-card[data-project="feel-marni"] {
+  --world-paper: #041e42;
+  --world-ink: #f4f1e6;
+  --world-muted: #d5dbd8;
+  --world-accent: #af2636;
+}
+.project-card[data-project="colores"] {
+  --world-paper: #d7cfc3;
+  --world-ink: #413b31;
+  --world-muted: #5e5244;
+  --world-accent: #96513e;
+}
+.home-page .project-art {
+  display: block;
+  position: relative;
+  overflow: visible;
+  background: transparent;
+  padding: 0;
+  border: 0;
+  isolation: isolate;
+  container-type: size;
+}
+.home-page .project-art .stack-photo {
+  display: block;
+  position: absolute;
+  /* Keep uncropped photographs inside the stage, including wide screens. */
+  max-width: calc(78cqh * var(--photo-ratio));
+  transition: transform 0.28s var(--ease);
+}
+.home-page .project-art picture {
+  display: block;
+}
+.home-page .project-art img {
+  display: block;
+  width: 100%;
+  height: auto;
+  min-height: 0;
+  max-height: none;
+  object-fit: contain;
+  background: transparent;
+  transform: none;
+}
+.stack-photo-1 {
+  z-index: 1;
+}
+.stack-photo-2 {
+  z-index: 2;
+}
+.stack-photo-3 {
+  z-index: 3;
+}
+.stack-label {
+  display: none;
+}
+.project-chapter-end {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.story-study figcaption {
+  font-size: 10px;
+  line-height: 1.5;
+  margin-top: 12px;
+}
+.story-study img {
+  width: 100%;
+  height: auto;
+  max-height: 240px;
+  object-fit: contain;
+  background: transparent;
+}
+
+/* Journal: complete editorial spreads, with pauses between the worlds. */
+.home-page .projects[data-layout="story"] {
+  padding-top: 48px;
+}
+.home-page .projects[data-layout="story"] .project-card {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  align-items: start;
+  gap: 40px 24px;
+  padding: 80px var(--page) 32px;
+  margin: 0 0 144px;
+  min-height: 960px;
+  border: 0;
+  background: var(--world-paper);
+  color: var(--world-ink);
+  --ink: var(--world-ink);
+  --muted: var(--world-muted);
+}
+.home-page .projects[data-layout="story"] .project-meta {
+  grid-column: 1 / 5;
+  grid-row: 1;
+  align-self: start;
+  z-index: 4;
+}
+.home-page .projects[data-layout="story"] .project-meta h2 {
+  margin: 40px 0 12px;
+  font-size: clamp(44px, 6.6vw, 112px);
+  line-height: 0.98;
+}
+.home-page .projects[data-layout="story"] .project-subtitle {
+  font-size: 22px;
+  max-width: 18em;
+}
+.home-page .preview-lead {
+  margin-top: 32px;
+  max-width: 23em;
+  font-size: 16px;
+  line-height: 1.6;
+}
+.home-page .projects[data-layout="story"] .project-meta .category {
+  font-size: 11px;
+  max-width: 28em;
+  line-height: 1.6;
+}
+.home-page .projects[data-layout="story"] .project-meta .text-link {
+  margin-top: 32px;
+}
+.home-page .projects[data-layout="story"] .project-art {
+  grid-column: 5 / 13;
+  grid-row: 1 / 3;
+  order: 0;
+  height: 730px;
+}
+.home-page .projects[data-layout="story"] .stack-photo-1 {
+  width: 36%;
+  top: 0;
+  left: 4%;
+}
+.home-page .projects[data-layout="story"] .stack-photo-2 {
+  width: 30%;
+  bottom: 0;
+  left: 8%;
+}
+.home-page .projects[data-layout="story"] .stack-photo-3 {
+  width: 57%;
+  right: 0;
+  top: 12%;
+}
+.home-page .projects[data-layout="story"] .story-study {
+  grid-column: 1 / 4;
+  grid-row: 2;
+  align-self: end;
+  max-width: 210px;
+}
+.home-page .projects[data-layout="story"] .project-chapter-end {
+  grid-column: 1 / -1;
+  align-self: end;
+  border-top: 1px solid currentColor;
+  padding-top: 20px;
+}
+.home-page .projects[data-layout="story"] .project-card:last-child {
+  margin-bottom: 0;
+}
+/* Pescadilla: red marginal headings and fragments on warm paper. */
+.home-page
+  .projects[data-layout="story"]
+  [data-project="pescadilla"]
+  .project-meta
+  h2 {
+  color: var(--world-accent);
+  font-weight: 350;
+}
+.home-page
+  .projects[data-layout="story"]
+  [data-project="pescadilla"]
+  .stack-photo-1 {
+  transform: rotate(-4deg);
+}
+.home-page
+  .projects[data-layout="story"]
+  [data-project="pescadilla"]
+  .story-study {
+  padding: 12px;
+  background: #faf8ef;
+}
+/* Manuela: a theatre poster and three white photographic mounts. */
+.home-page .projects[data-layout="story"] [data-project="manuela"] {
+  grid-template-rows: auto auto auto;
+  padding-top: 56px;
+}
+.home-page
+  .projects[data-layout="story"]
+  [data-project="manuela"]
+  .project-meta {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 8vw;
+}
+.home-page
+  .projects[data-layout="story"]
+  [data-project="manuela"]
+  .project-meta
+  > .eyebrow {
+  grid-column: 1/-1;
+}
+.home-page
+  .projects[data-layout="story"]
+  [data-project="manuela"]
+  .project-meta
+  h2 {
+  grid-column: 1;
+  grid-row: 2/5;
+  text-transform: uppercase;
+  font-weight: 850;
+  font-size: clamp(56px, 10vw, 164px);
+  line-height: 0.85;
+  margin: 20px 0 0;
+  letter-spacing: -0.075em;
+}
+.home-page
+  .projects[data-layout="story"]
+  [data-project="manuela"]
+  .project-subtitle {
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 28px;
+  color: #e6caa0;
+}
+.home-page
+  .projects[data-layout="story"]
+  [data-project="manuela"]
+  .preview-lead {
+  margin: 0;
+}
+.home-page .projects[data-layout="story"] [data-project="manuela"] .category {
+  display: none;
+}
+.home-page
+  .projects[data-layout="story"]
+  [data-project="manuela"]
+  .project-meta
+  .text-link {
+  grid-column: 2;
+  margin: 0;
+}
+.home-page
+  .projects[data-layout="story"]
+  [data-project="manuela"]
+  .project-art {
+  grid-column: 1 / 10;
+  grid-row: 2;
+  height: 680px;
+}
+.home-page
+  .projects[data-layout="story"]
+  [data-project="manuela"]
+  .stack-photo {
+  padding: 10px;
+  background: #f6f2e9;
+}
+.home-page
+  .projects[data-layout="story"]
+  [data-project="manuela"]
+  .stack-photo-1 {
+  width: 32%;
+  left: 0;
+  top: 0;
+}
+.home-page
+  .projects[data-layout="story"]
+  [data-project="manuela"]
+  .stack-photo-2 {
+  width: 31%;
+  left: auto;
+  right: 0;
+  top: 0;
+  bottom: auto;
+}
+.home-page
+  .projects[data-layout="story"]
+  [data-project="manuela"]
+  .stack-photo-3 {
+  width: 43%;
+  right: 28%;
+  top: 14%;
+}
+.home-page
+  .projects[data-layout="story"]
+  [data-project="manuela"]
+  .story-study {
+  grid-column: 10 / 13;
+  align-self: center;
+  background: #7c2632;
+  padding: 16px;
+}
+/* Feel Marni: a horizontal running shot anchored by graphic colour bands. */
+.home-page .projects[data-layout="story"] [data-project="feel-marni"] {
+  border-top: 24px solid #af2636;
+}
+.home-page
+  .projects[data-layout="story"]
+  [data-project="feel-marni"]
+  .project-meta
+  h2 {
+  text-transform: uppercase;
+  font-weight: 800;
+  font-style: italic;
+  color: #ffb81c;
+}
+.home-page
+  .projects[data-layout="story"]
+  [data-project="feel-marni"]
+  .project-art {
+  height: 650px;
+}
+.home-page
+  .projects[data-layout="story"]
+  [data-project="feel-marni"]
+  .stack-photo-1 {
+  width: 25%;
+  left: 12%;
+  top: 0;
+}
+.home-page
+  .projects[data-layout="story"]
+  [data-project="feel-marni"]
+  .stack-photo-2 {
+  width: 25%;
+  left: auto;
+  right: 12%;
+  top: 0;
+  bottom: auto;
+}
+.home-page
+  .projects[data-layout="story"]
+  [data-project="feel-marni"]
+  .stack-photo-3 {
+  width: 100%;
+  max-width: calc(55cqh * var(--photo-ratio));
+  right: 0;
+  top: 31%;
+  border-bottom: 16px solid #af2636;
+}
+.home-page
+  .projects[data-layout="story"]
+  [data-project="feel-marni"]
+  .story-study {
+  max-width: 240px;
+}
+/* COLORES: composed colour planes, with the photographs left uncropped. */
+.home-page
+  .projects[data-layout="story"]
+  [data-project="colores"]
+  .project-meta
+  h2 {
+  font-weight: 350;
+  letter-spacing: -0.06em;
+}
+.home-page
+  .projects[data-layout="story"]
+  [data-project="colores"]
+  .project-meta
+  h2::after {
+  content: "";
+  display: block;
+  height: 28px;
+  margin-top: 32px;
+  background: linear-gradient(
+    90deg,
+    #ac793d 0 20%,
+    #a45d48 20% 40%,
+    #71604b 40% 60%,
+    #6c7054 60% 80%,
+    #cb5c3e 80%
+  );
+}
+.home-page
+  .projects[data-layout="story"]
+  [data-project="colores"]
+  .stack-photo-1 {
+  width: 37%;
+  left: 0;
+  top: 0;
+  padding: 16px;
+  background: #997344;
+}
+.home-page
+  .projects[data-layout="story"]
+  [data-project="colores"]
+  .stack-photo-2 {
+  width: 34%;
+  left: 0;
+  bottom: 0;
+  padding: 12px;
+  background: #777953;
+}
+.home-page
+  .projects[data-layout="story"]
+  [data-project="colores"]
+  .stack-photo-3 {
+  width: 58%;
+  right: 0;
+  top: 15%;
+  padding: 20px;
+  background: #aa6b53;
+}
+
+/* Index: three photos in every cluster, visible before interaction. */
+.home-page .projects[data-layout="index"] {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 72px 8vw;
+  padding: 64px max(var(--page), 6vw) 96px;
+}
+.home-page .projects[data-layout="index"] .project-card {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+  background: transparent;
+}
+.home-page .projects[data-layout="index"] .project-art {
+  height: clamp(260px, 27vw, 430px);
+  width: 100%;
+  order: -1;
+}
+.home-page .projects[data-layout="index"] .stack-photo {
+  width: 42%;
+}
+.home-page .projects[data-layout="index"] .stack-photo-1 {
+  top: 5%;
+  left: 2%;
+  transform: rotate(-5deg);
+}
+.home-page .projects[data-layout="index"] .stack-photo-2 {
+  top: 0;
+  right: 2%;
+  transform: rotate(4deg);
+}
+.home-page .projects[data-layout="index"] .stack-photo-3 {
+  width: 43%;
+  top: 18%;
+  left: 28%;
+}
+.home-page .projects[data-layout="index"] .stack-photo img {
+  max-height: 330px;
+  width: 100%;
+  height: auto;
+  aspect-ratio: auto;
+  object-fit: contain;
+}
+.home-page
+  .projects[data-layout="index"]
+  [data-project="manuela"]
+  .stack-photo {
+  background: #201c1c;
+  padding: 8px;
+}
+.home-page
+  .projects[data-layout="index"]
+  [data-project="feel-marni"]
+  .stack-photo-3 {
+  width: 80%;
+  max-width: calc(55cqh * var(--photo-ratio));
+  top: 37%;
+  left: 10%;
+  border-bottom: 10px solid #af2636;
+}
+.home-page
+  .projects[data-layout="index"]
+  [data-project="colores"]
+  .stack-photo-1 {
+  background: #997344;
+  padding: 8px;
+}
+.home-page
+  .projects[data-layout="index"]
+  [data-project="colores"]
+  .stack-photo-2 {
+  background: #777953;
+  padding: 8px;
+}
+.home-page
+  .projects[data-layout="index"]
+  [data-project="colores"]
+  .stack-photo-3 {
+  background: #aa6b53;
+  padding: 8px;
+}
+.home-page .projects[data-layout="index"] .stack-label {
+  display: block;
+  position: absolute;
+  z-index: 4;
+  top: 51%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 10px 16px;
+  color: #fffdf5;
+  background: #272722;
+  font-size: 14px;
+  text-align: center;
+  width: max-content;
+  max-width: 85%;
+}
+.home-page
+  .projects[data-layout="index"]
+  [data-project="pescadilla"]
+  .stack-label {
+  background: #872e22;
+}
+.home-page
+  .projects[data-layout="index"]
+  [data-project="manuela"]
+  .stack-label {
+  background: #712432;
+}
+.home-page
+  .projects[data-layout="index"]
+  [data-project="feel-marni"]
+  .stack-label {
+  background: #041e42;
+}
+.home-page
+  .projects[data-layout="index"]
+  [data-project="colores"]
+  .stack-label {
+  background: #795846;
+}
+.home-page .projects[data-layout="index"] .project-meta {
+  align-self: stretch;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 4px 16px;
+  border-top: 1px solid var(--line);
+  padding-top: 16px;
+}
+.home-page .projects[data-layout="index"] .project-meta h2 {
+  font-size: 24px;
+  grid-column: 1;
+  grid-row: 1;
+  margin: 0;
+}
+.home-page .projects[data-layout="index"] .project-meta > .eyebrow {
+  position: static;
+  grid-column: 2;
+  grid-row: 1;
+  font-size: 10px;
+  padding-top: 8px;
+}
+.home-page .projects[data-layout="index"] .project-subtitle {
+  grid-column: 1/-1;
+  font-size: 14px;
+}
+.home-page
+  .projects[data-layout="index"]
+  :is(
+    .preview-lead,
+    .category,
+    .text-link,
+    .story-study,
+    .project-chapter-end
+  ) {
+  display: none;
+}
+/* The project lettering carries its identity into the compact index too. */
+.home-page .projects[data-layout="index"] [data-project="manuela"] h2 {
+  text-transform: uppercase;
+  font-weight: 750;
+}
+.home-page .projects[data-layout="index"] [data-project="feel-marni"] h2 {
+  text-transform: uppercase;
+  font-style: italic;
+  font-weight: 750;
+  color: #041e42;
+}
+.home-page .projects[data-layout="index"] [data-project="pescadilla"] h2 {
+  color: #8e3027;
+  font-weight: 350;
+}
+
+@media (hover: hover) {
+  .home-page .projects[data-layout="index"] .project-art:hover .stack-photo-1 {
+    transform: translate(-8px, -8px) rotate(-8deg);
+  }
+  .home-page .projects[data-layout="index"] .project-art:hover .stack-photo-2 {
+    transform: translate(8px, -8px) rotate(7deg);
+  }
+  .home-page .projects[data-layout="index"] .project-art:hover .stack-photo-3 {
+    transform: translateY(8px);
+  }
+}
+.home-page
+  .projects[data-layout="index"]
+  .project-art:focus-visible
+  .stack-photo-1 {
+  transform: translate(-8px, -8px) rotate(-8deg);
+}
+.home-page
+  .projects[data-layout="index"]
+  .project-art:focus-visible
+  .stack-photo-2 {
+  transform: translate(8px, -8px) rotate(7deg);
+}
+.home-page
+  .projects[data-layout="index"]
+  .project-art:focus-visible
+  .stack-photo-3 {
+  transform: translateY(8px);
+}
+.archive-persona {
+  padding: 112px var(--page);
+  background: #c2c7a8;
+  color: #353b24;
+}
+.archive-persona > a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: clamp(72px, 16vw, 240px);
+  line-height: 1.1;
+  letter-spacing: -0.07em;
+  margin: 24px 0 40px;
+}
+.archive-persona > a span {
+  font-size: 0.65em;
+}
+.archive-persona > p:last-child {
+  font-size: 16px;
+  line-height: 1.6;
+}
+.home-page footer {
+  background: #dfdcc9;
+}
+
+@media (max-width: 1100px) {
+  .home-page .projects[data-layout="story"] .project-art {
+    height: 620px;
+  }
+  .home-page .projects[data-layout="story"] .project-card {
+    min-height: 850px;
+    gap: 32px 16px;
+  }
+  .home-page .projects[data-layout="story"] .project-meta h2 {
+    font-size: 6.5vw;
+  }
+  .home-page
+    .projects[data-layout="story"]
+    [data-project="manuela"]
+    .project-art {
+    height: 540px;
+  }
+  .home-page
+    .projects[data-layout="story"]
+    [data-project="feel-marni"]
+    .project-art {
+    height: 520px;
+  }
+}
+@media (max-width: 700px) {
+  .archive-intro {
+    padding: 40px var(--page);
+  }
+  .archive-heading {
+    align-items: start;
+    gap: 16px;
+  }
+  .archive-heading .eyebrow {
+    font-size: 9px;
+    max-width: 16em;
+  }
+  .archive-heading > span {
+    text-align: right;
+  }
+  .archive-intro h1 {
+    font-size: 12.8vw;
+    margin: 32px 0 24px;
+  }
+  .archive-description {
+    align-items: start;
+    gap: 16px;
+    font-size: 12px;
+  }
+  .archive-description .text-link {
+    font-size: 11px;
+    max-width: 11em;
+    flex-shrink: 0;
+  }
+  .home-page .work-toolbar {
+    gap: 12px;
+    padding: 8px var(--page);
+  }
+  .home-page .work-toolbar > h2 {
+    font-size: 9px;
+    max-width: 12em;
+  }
+  .home-page .view-switch {
+    gap: 12px;
+  }
+  .home-page .view-switch button {
+    font-size: 11px;
+    gap: 6px;
+    padding: 0;
+  }
+  .home-page .projects[data-layout="story"] {
+    padding-top: 24px;
+  }
+  .home-page .projects[data-layout="story"] .project-card {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    padding: 40px var(--page) 24px;
+    margin-bottom: 72px;
+    min-height: 0;
+  }
+  .home-page .projects[data-layout="story"] .project-meta {
+    width: 100%;
+  }
+  .home-page .projects[data-layout="story"] .project-meta h2 {
+    font-size: 14vw;
+    margin-top: 24px;
+  }
+  .home-page .projects[data-layout="story"] .project-subtitle {
+    font-size: 20px;
+  }
+  .home-page .preview-lead {
+    font-size: 14px;
+    margin-top: 20px;
+  }
+  .home-page .projects[data-layout="story"] .project-meta .text-link {
+    margin-top: 20px;
+  }
+  .home-page .projects[data-layout="story"] .project-art {
+    width: 100%;
+    height: 112vw;
+    max-height: 650px;
+  }
+  .home-page .projects[data-layout="story"] .story-study {
+    max-width: 45%;
+    margin: 0;
+  }
+  .home-page .projects[data-layout="story"] .project-chapter-end {
+    width: 100%;
+    font-size: 8px;
+    gap: 16px;
+  }
+  .home-page
+    .projects[data-layout="story"]
+    [data-project="manuela"]
+    .project-meta {
+    display: block;
+  }
+  .home-page
+    .projects[data-layout="story"]
+    [data-project="manuela"]
+    .project-meta
+    h2 {
+    font-size: 16vw;
+    margin: 24px 0 16px;
+  }
+  .home-page
+    .projects[data-layout="story"]
+    [data-project="manuela"]
+    .project-subtitle {
+    font-size: 20px;
+  }
+  .home-page
+    .projects[data-layout="story"]
+    [data-project="manuela"]
+    .preview-lead {
+    margin-top: 20px;
+  }
+  .home-page
+    .projects[data-layout="story"]
+    [data-project="manuela"]
+    .project-meta
+    .text-link {
+    margin-top: 16px;
+  }
+  .home-page
+    .projects[data-layout="story"]
+    [data-project="manuela"]
+    .project-art {
+    height: 90vw;
+  }
+  .home-page
+    .projects[data-layout="story"]
+    [data-project="manuela"]
+    .stack-photo {
+    padding: 4px;
+  }
+  .home-page
+    .projects[data-layout="story"]
+    [data-project="manuela"]
+    .story-study {
+    align-self: end;
+  }
+  .home-page
+    .projects[data-layout="story"]
+    [data-project="feel-marni"]
+    .project-art {
+    height: 95vw;
+  }
+  .home-page
+    .projects[data-layout="story"]
+    [data-project="colores"]
+    .stack-photo {
+    padding: 8px;
+  }
+  .home-page .projects[data-layout="index"] {
+    gap: 48px 24px;
+    padding: 40px var(--page) 64px;
+  }
+  .home-page .projects[data-layout="index"] .project-art {
+    height: 34vw;
+  }
+  .home-page .projects[data-layout="index"] .project-meta {
+    display: block;
+  }
+  .home-page .projects[data-layout="index"] .project-meta > .eyebrow {
+    padding: 0;
+    font-size: 9px;
+  }
+  .home-page .projects[data-layout="index"] .project-meta h2 {
+    font-size: 22px;
+    margin: 8px 0;
+  }
+  .home-page .projects[data-layout="index"] .project-subtitle {
+    font-size: 12px;
+  }
+  .home-page .projects[data-layout="index"] .stack-label {
+    font-size: 11px;
+    padding: 8px;
+  }
+  .archive-persona {
+    padding: 64px var(--page);
+  }
+  .archive-persona > a {
+    font-size: 20vw;
+  }
+}
+@media (max-width: 520px) {
+  .home-page .projects[data-layout="index"] {
+    grid-template-columns: 1fr;
+    gap: 56px;
+  }
+  .home-page .projects[data-layout="index"] .project-art {
+    height: 76vw;
+    max-height: 390px;
+  }
+  .home-page .projects[data-layout="index"] .stack-label {
+    font-size: 14px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .home-page .project-art .stack-photo {
+    transition: none;
+  }
+}
