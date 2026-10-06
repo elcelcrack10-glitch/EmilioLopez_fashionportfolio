@@ -25,7 +25,6 @@
   --palette-blue: #8c96ef;
   --palette-yellow: #f6efb3;
   --palette-khaki: #c2bb99;
-  --hero-blue: #4a54c8;
   --paper: var(--palette-yellow);
   --ink: #141414;
   --muted: #5a5b3a;
@@ -54,8 +53,8 @@ html:has(.persona-page) {
   justify-content: space-between;
   gap: 24px;
   overflow: hidden;
-  background: var(--hero-blue);
-  color: var(--palette-yellow);
+  background: var(--palette-blue);
+  color: var(--ink);
 }
 .about-hero-top,
 .about-hero-foot {
@@ -93,12 +92,6 @@ html:has(.persona-page) {
 .about-name span {
   display: block;
 }
-.about-name span:first-child {
-  color: var(--palette-yellow);
-}
-.about-name span:last-child {
-  color: var(--palette-khaki);
-}
 
 /* The biography. */
 .persona-page .biography {
@@ -121,16 +114,16 @@ html:has(.persona-page) {
   gap: 10px;
   min-height: 44px;
   padding: 12px 18px;
-  background: var(--palette-blue);
+  background: var(--palette-khaki);
   color: var(--ink);
   text-decoration: none;
   border: 0;
 }
 .persona-page .bio-label .text-link .file-label {
-  color: #2a2f63;
+  color: #3d3a22;
 }
 .persona-page .bio-label .text-link:hover {
-  background: #6e79e6;
+  background: #b3ab86;
 }
 .persona-page .bio-copy p {
   font-size: clamp(17px, 1.5vw, 22px);
