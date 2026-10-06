@@ -39,33 +39,29 @@ export function renderer(lang, manifest) {
   function shell(slug, title, description, content, cover) {
     const isAbout = slug === "sobre-mi";
     const isProject = projects.some((project) => project.slug === slug);
-    const isHome = slug === "" && content.includes('class="archive-intro"');
+    const isHome = slug === "" && content.includes('class="image-archive"');
     const otherLang = lang === "es" ? "en" : "es";
     const canonical = siteURL ? absoluteSiteURL(pathFor(slug, lang)) : null;
     const languageLinks = siteURL
       ? `<link rel="canonical" href="${escape(canonical)}"><link rel="alternate" hreflang="${otherLang}" href="${escape(absoluteSiteURL(pathFor(slug, otherLang)))}">`
       : "";
-    return `<!doctype html><html lang="${lang}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>${escape(title)}</title><meta name="description" content="${escape(description)}"><meta name="theme-color" content="${isAbout ? "#c2c7a8" : "#f3f1ec"}"><meta property="og:title" content="${escape(title)}"><meta property="og:description" content="${escape(description)}"><meta property="og:type" content="website">${cover ? `<meta property="og:image" content="${escape(siteURL ? absoluteSiteURL(manifest[cover.id].src) : manifest[cover.id].src)}">` : ""}<link rel="icon" type="image/svg+xml" href="/favicon.svg">${languageLinks}<link rel="preload" href="/fonts/albert-sans-latin-variable.woff2" as="font" type="font/woff2" crossorigin><link rel="stylesheet" href="/style.css">${isProject || isHome ? '<link rel="stylesheet" href="/project-worlds.css">' : ""}${isHome ? '<link rel="stylesheet" href="/archive.css">' : ""}${isAbout ? '<link rel="stylesheet" href="/persona.css">' : ""}<script src="/app.js" defer></script></head><body id="top"${isProject ? ` class="project-page" data-project="${slug}"` : isHome ? ' class="home-page"' : isAbout ? ' class="persona-page"' : ""}><a class="skip-link" href="#main">${words("Saltar al contenido", "Skip to content")}</a><header class="site-header"><a class="wordmark" href="${href("")}">Emilio Lopez<span>${words("Diseñador de moda", "Fashion designer")}</span></a><nav aria-label="${words("Navegación principal", "Main navigation")}"><a href="${href("")}#trabajos" ${slug !== "sobre-mi" ? 'aria-current="page"' : ""}>${words("Trabajo", "Work")}</a><a href="${href("sobre-mi")}" ${slug === "sobre-mi" ? 'aria-current="page"' : ""}>${words("Sobre mí", "About")}</a><a href="#contacto">${words("Contacto", "Contact")}</a></nav><div class="languages" aria-label="${words("Idioma", "Language")}"><a href="${pathFor(slug, "es")}" lang="es" ${lang === "es" ? 'aria-current="true"' : ""}>ES</a><span aria-hidden="true">/</span><a href="${pathFor(slug, "en")}" lang="en" ${lang === "en" ? 'aria-current="true"' : ""}>EN</a></div></header><main id="main">${content}</main>${footer(isAbout)}<dialog class="lightbox" aria-label="${words("Visor de fotografías", "Photo viewer")}"><div class="viewer-toolbar"><span class="viewer-count" aria-live="polite"></span><button type="button" data-close>${words("Cerrar", "Close")} <span aria-hidden="true">×</span></button></div><div class="viewer-stage"><button type="button" data-prev aria-label="${words("Foto anterior", "Previous photo")}">←</button><img class="viewer-image" alt=""><button type="button" data-next aria-label="${words("Foto siguiente", "Next photo")}">→</button></div><p class="viewer-caption" aria-live="polite"></p></dialog></body></html>`;
+    return `<!doctype html><html lang="${lang}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>${escape(title)}</title><meta name="description" content="${escape(description)}"><meta name="theme-color" content="${isAbout ? "#c2c7a8" : "#f3f1ec"}"><meta property="og:title" content="${escape(title)}"><meta property="og:description" content="${escape(description)}"><meta property="og:type" content="website">${cover ? `<meta property="og:image" content="${escape(siteURL ? absoluteSiteURL(manifest[cover.id].src) : manifest[cover.id].src)}">` : ""}<link rel="icon" type="image/svg+xml" href="/favicon.svg">${languageLinks}<link rel="preload" href="/fonts/albert-sans-latin-variable.woff2" as="font" type="font/woff2" crossorigin><link rel="stylesheet" href="/style.css">${isProject || isHome ? '<link rel="stylesheet" href="/exhibition.css"><script src="/exhibition.js" defer></script>' : ""}${isAbout ? '<link rel="stylesheet" href="/persona.css">' : ""}<script src="/app.js" defer></script></head><body id="top"${isProject ? ` class="exhibition-page" data-project="${slug}"` : isHome ? ' class="archive-page"' : isAbout ? ' class="persona-page"' : ""}><a class="skip-link" href="#main">${words("Saltar al contenido", "Skip to content")}</a><header class="site-header"><a class="wordmark" href="${href("")}">Emilio Lopez<span>${words("Diseñador de moda", "Fashion designer")}</span></a><nav aria-label="${words("Navegación principal", "Main navigation")}"><a href="${href("")}#trabajos" ${slug !== "sobre-mi" ? 'aria-current="page"' : ""}>${words("Trabajo", "Work")}</a><a href="${href("sobre-mi")}" ${slug === "sobre-mi" ? 'aria-current="page"' : ""}>${words("Sobre mí", "About")}</a><a href="#contacto">${words("Contacto", "Contact")}</a></nav><div class="languages" aria-label="${words("Idioma", "Language")}"><a href="${pathFor(slug, "es")}" lang="es" ${lang === "es" ? 'aria-current="true"' : ""}>ES</a><span aria-hidden="true">/</span><a href="${pathFor(slug, "en")}" lang="en" ${lang === "en" ? 'aria-current="true"' : ""}>EN</a></div></header><main id="main">${content}</main>${footer(isAbout)}<dialog class="lightbox" aria-label="${words("Visor de fotografías", "Photo viewer")}"><div class="viewer-toolbar"><span class="viewer-count" aria-live="polite"></span><button type="button" data-close>${words("Cerrar", "Close")} <span aria-hidden="true">×</span></button></div><div class="viewer-stage"><button type="button" data-prev aria-label="${words("Foto anterior", "Previous photo")}">←</button><img class="viewer-image" alt=""><button type="button" data-next aria-label="${words("Foto siguiente", "Next photo")}">→</button></div><p class="viewer-caption" aria-live="polite"></p></dialog></body></html>`;
   }
   function home() {
-    const cards = projects
-      .map((p, i) => {
-        const cover = p.photos[p.cover || 0];
-        const supporting = p.photos.filter((photo) => photo !== cover);
-        const previews = [supporting[1], supporting[4], cover];
-        const study = p.process[p.slug === "pescadilla" ? 1 : 0].images[0];
-        return `<article class="project-card" data-project="${p.slug}">
-        <div class="project-meta"><span class="eyebrow">${number(i)} / ${p.year}</span><h2><a href="${href(p.slug)}">${p.title}</a></h2><p class="project-subtitle">${escape(t(p.subtitle))}</p><p class="preview-lead">${escape(t(p.lead))}</p><p class="category">${escape(t(p.category))}</p><a class="text-link" href="${href(p.slug)}">${words("Explorar proyecto", "Explore project")} ${arrow}</a></div>
-        <a class="project-art" href="${href(p.slug)}" aria-label="${words("Ver", "View")} ${p.title}">${previews.map((photo, position) => `<span class="stack-photo stack-photo-${position + 1}${manifest[photo.id].width > manifest[photo.id].height ? " is-landscape" : ""}" style="--photo-ratio: ${manifest[photo.id].width / manifest[photo.id].height}">${img(photo, false, "(max-width: 700px) 65vw, 40vw")}</span>`).join("")}<span class="stack-label" aria-hidden="true">${p.title} ↗</span></a>
-        <figure class="story-study">${img(study, false, "(max-width: 700px) 35vw, 16vw")}<figcaption>${words("Del cuaderno", "From the sketchbook")} / ${p.title}</figcaption></figure>
-        <div class="project-chapter-end"><span>${words("Colección", "Collection")} ${number(i)} / 04</span><span>${escape(t(p.subtitle))}</span></div>
-      </article>`;
-      })
-      .join("");
-    const featured = projects.find((p) => p.slug === "feel-marni");
-    const content = `<section class="archive-intro" aria-labelledby="home-title"><div class="archive-heading"><p class="eyebrow">${words("Diseño de moda · Dirección creativa", "Fashion design · Creative direction")}</p><span class="eyebrow">MADRID / 2024—2026</span></div><h1 id="home-title">Emilio Lopez</h1><div class="archive-description"><p>${words("Una selección de proyectos.<br>Del concepto a la prenda y la imagen.", "Selected projects.<br>From concept to garment and image.")}</p><a class="text-link" href="${href("sobre-mi")}">${words("Conocer a la persona", "Meet the person")} ↗</a></div></section>
-    <section id="trabajos" class="work-section" aria-label="${words("Proyectos seleccionados", "Selected projects")}"><div class="work-toolbar"><h2 class="eyebrow">${words("Proyectos seleccionados", "Selected projects")} <span>(04)</span></h2><div class="view-switch" role="group" aria-label="${words("Vista de proyectos", "Project view")}"><button data-view="story" type="button" aria-pressed="true"><span class="view-icon view-story" aria-hidden="true"></span>${words("Recorrido", "Journal")}</button><button data-view="index" type="button" aria-pressed="false"><span class="view-icon view-grid" aria-hidden="true"></span>${words("Índice", "Index")}</button></div></div><div class="projects" data-layout="story">${cards}</div></section>
-    <section class="archive-persona"><p class="eyebrow">${words("Detrás de los proyectos", "Behind the projects")}</p><a href="${href("sobre-mi")}">${words("persona", "person")} <span aria-hidden="true">↗</span></a><p>${words("Investigar, escribir y conversar.<br>Encontrar una idea y empezar a crear.", "Research, write and talk.<br>Find an idea and start creating.")}</p></section>`;
+    const selection = projects.map((p) => {
+      const cover = p.photos[p.cover || 0];
+      const rest = p.photos.filter((photo) => photo !== cover);
+      return [cover, rest[0], rest[1], rest[3], rest[5]];
+    });
+    const tiles = Array.from({ length: 5 }, (_, row) =>
+      projects
+        .map((p, i) => {
+          const photo = selection[i][row];
+          return `<figure class="archive-image" data-project="${p.slug}"><a href="${href(p.slug)}#photo-${photo.id}" aria-label="${words("Ver", "View")} ${p.title} — ${words("imagen", "image")} ${row + 1}">${img(photo, row === 0, "(max-width: 600px) 40vw, (max-width: 1000px) 25vw, 16vw")}</a><figcaption><span>${p.title}</span><span>${number(row)} / 05</span></figcaption></figure>`;
+        })
+        .join(""),
+    ).join("");
+    const content = `<section class="image-archive" id="trabajos" aria-labelledby="home-title"><div class="archive-toolbar"><h1 id="home-title">${words("Trabajo seleccionado", "Selected work")}</h1><div class="archive-filters" role="group" aria-label="${words("Filtrar proyectos", "Filter projects")}"><button type="button" data-filter="all" aria-pressed="true">${words("Todos", "All")} <span>(20)</span></button>${projects.map((p) => `<button type="button" data-filter="${p.slug}" aria-pressed="false">${p.title}</button>`).join("")}</div><span class="archive-count" aria-live="polite">20 / 20</span></div><div class="archive-grid">${tiles}</div></section>`;
     return shell(
       "",
       "Emilio Lopez — Fashion portfolio",
@@ -74,47 +70,39 @@ export function renderer(lang, manifest) {
         "Fashion design, creative direction and editorials. Selected projects by Emilio Lopez, Madrid.",
       ),
       content,
-      featured.photos[featured.cover || 0],
+      projects[0].photos[0],
     );
   }
-  function gallery(images, group, process = false) {
-    return `<div class="${process ? "process-gallery" : "editorial-gallery"}">${images.map((im, i) => `<figure class="gallery-item ${manifest[im.id].width > manifest[im.id].height ? "wide" : "portrait"}"><a class="zoom-link" href="${manifest[im.id].src}" data-gallery="${group}" aria-label="${words("Ampliar:", "Enlarge:")} ${escape(t(im.alt))}">${img(im, false, process ? "(max-width: 700px) 92vw, 45vw" : "(max-width: 700px) 92vw, 65vw")}<span class="zoom-mark" aria-hidden="true">+</span></a><figcaption><span>${number(i)}</span>${escape(t(im.alt))}</figcaption></figure>`).join("")}</div>`;
+  function railPhoto(
+    photo,
+    group,
+    index,
+    { eager = false, process = false } = {},
+  ) {
+    const m = manifest[photo.id];
+    return `<figure id="photo-${photo.id}" class="rail-image${process ? " rail-study" : ""}${m.width > m.height ? " rail-landscape" : ""}" data-rail-panel style="--image-ratio:${m.width / m.height}"><a class="gallery-link" href="${m.src}" data-gallery="${group}" aria-label="${words("Ampliar:", "Enlarge:")} ${escape(t(photo.alt))}">${img(photo, eager, "(max-width: 700px) 85vw, 65vw")}<span class="rail-zoom" aria-hidden="true">+</span></a><figcaption><span>${number(index)}</span><span>${escape(t(photo.alt))}</span></figcaption></figure>`;
   }
   function project(p) {
     const index = projects.indexOf(p);
     const cover = p.photos[p.cover || 0];
     const next = projects[(index + 1) % projects.length];
-    const film = p.film
-      ? `<section id="film" class="film-section reader-section" aria-labelledby="film-title"><div class="section-heading"><span class="eyebrow">${words("La colección en movimiento", "The collection in motion")}</span><h2 id="film-title">Fashion film</h2></div><video controls playsinline preload="none" width="1280" height="720" poster="${manifest["film-poster"].src}" aria-label="Feel Marni — fashion film"><source src="/media/feel-marni.mp4" type="video/mp4"><p><a href="/media/feel-marni.mp4">${words("Descargar el vídeo", "Download the film")}</a></p></video><div class="film-description"><p>${escape(t(p.film.text))}</p>${creditList(p.film.credits)}</div></section>`
-      : "";
-    const process = p.process
-      .map(
-        (section) =>
-          `<section class="process-chapter"><div class="chapter-heading"><h3>${escape(t(section.title))}</h3><p>${escape(t(section.text))}</p></div>${gallery(section.images, `process-${section.images[0].id}`, true)}</section>`,
-      )
-      .join("");
+    const editorial = [cover, ...p.photos.filter((photo) => photo !== cover)];
     const readerLinks = [
-      ["editorial", words("Editorial", "Editorial")],
+      ["editorial", "Editorial"],
       ["concepto", words("Concepto", "Concept")],
       ...(p.film ? [["film", "Film"]] : []),
       ["proceso", words("Proceso", "Process")],
     ];
-    const content = `<section class="project-opening" aria-labelledby="project-title">
-      <div class="project-heading">
-        <a class="text-link back-link" href="${href("")}#trabajos">← ${words("Proyectos", "Projects")}</a>
-        <div class="project-title-group"><h1 id="project-title">${p.title}</h1><p>${escape(t(p.subtitle))}</p></div>
-        <span class="project-edition eyebrow">${p.year}<span>${number(index)} / 04</span></span>
-      </div>
-      <div class="project-hero ${manifest[cover.id].width > manifest[cover.id].height ? "landscape" : ""}"><a href="${manifest[cover.id].src}" data-gallery="editorial" class="zoom-link" aria-label="${words("Ampliar portada de", "Enlarge cover of")} ${p.title}">${img(cover, true, "(max-width: 700px) calc(100vw - 32px), 75vw")}<span class="zoom-mark" aria-hidden="true">+</span></a></div>
-    </section>
-    <nav class="project-reader" aria-label="${words("Dentro del proyecto", "Inside the project")}"><a class="reader-title" href="#top">${p.title} ↑</a><div class="reader-chapters">${readerLinks.map(([id, label]) => `<a href="#${id}" data-reader-link>${label}</a>`).join("")}</div><a class="reader-next" href="${href(next.slug)}" aria-label="${words("Siguiente proyecto", "Next project")}: ${next.title}">↗</a></nav>
-    <section id="editorial" class="editorial-section reader-section" aria-labelledby="editorial-title"><div class="editorial-heading"><h2 id="editorial-title" class="eyebrow">${words("La editorial", "The editorial")}</h2><p>${String(p.photos.length).padStart(2, "0")} ${words("fotografías", "photographs")} / ${p.year}</p></div>${gallery(
-      p.photos.filter((im) => im !== cover),
-      "editorial",
-    )}</section>
-    <section id="concepto" class="project-introduction reader-section"><div><p class="eyebrow">${words("El concepto", "The concept")}</p><h2>${escape(t(p.lead))}</h2></div><div class="project-copy"><p>${escape(t(p.description))}</p><p class="project-note">${escape(t(p.note))}</p>${creditList(p.credits)}</div></section>
-    ${film}<section id="proceso" class="process-section reader-section"><div class="section-heading"><span class="eyebrow">${words("Detrás de la imagen", "Behind the image")}</span><h2>${words("El proceso", "The process")}<span aria-hidden="true"> ↙</span></h2></div>${process}</section>
-    <nav class="next-project" aria-label="${words("Siguiente proyecto", "Next project")}"><span class="eyebrow">${words("Siguiente proyecto", "Next project")} / ${number((index + 1) % projects.length)}</span><a href="${href(next.slug)}"><span class="next-project-title">${next.title} ${arrow}</span>${img(next.photos[next.cover || 0], false, "(max-width: 700px) 120px, 200px")}</a><a class="next-project-index text-link" href="${href("")}?view=index#trabajos">${words("Volver al índice", "Back to index")} ↗</a></nav>`;
+    const film = p.film
+      ? `<section id="film" class="rail-chapter" data-rail-chapter aria-label="Fashion film"><div class="rail-film" id="fashion-film" data-rail-panel><video controls playsinline preload="none" width="1280" height="720" poster="${manifest["film-poster"].src}" aria-label="Feel Marni — fashion film"><source src="/media/feel-marni.mp4" type="video/mp4"><a href="/media/feel-marni.mp4">${words("Descargar el vídeo", "Download the film")}</a></video><p>Fashion film / ${p.year}</p></div><div class="rail-note" id="film-credits" data-rail-panel><h2>Fashion film</h2><p>${escape(t(p.film.text))}</p><details><summary>${words("Créditos", "Credits")}</summary>${creditList(p.film.credits)}</details></div></section>`
+      : "";
+    const process = p.process
+      .map(
+        (section, i) =>
+          `<div class="rail-process"><div class="rail-note" id="proceso-${i + 1}" data-rail-panel><p class="rail-kicker">${words("El proceso", "The process")}</p><h3>${escape(t(section.title))}</h3><p>${escape(t(section.text))}</p></div>${section.images.map((photo, j) => railPhoto(photo, `process-${section.images[0].id}`, j, { process: true })).join("")}</div>`,
+      )
+      .join("");
+    const content = `<div class="project-exhibition"><aside class="project-margin"><a class="archive-return" href="${href("")}#trabajos"><span aria-hidden="true">←</span> ${words("Índice", "Index")}</a><div class="project-identity"><p class="project-date">${p.year} / ${number(index)}</p><h1>${p.title}</h1><p>${escape(t(p.subtitle))}</p></div><nav class="rail-navigation" aria-label="${words("Dentro del proyecto", "Inside the project")}">${readerLinks.map(([id, label]) => `<a href="#${id}" data-rail-link>${label}</a>`).join("")}</nav><p class="rail-instruction" id="rail-instruction">${words("Explora hacia los lados", "Explore sideways")} ↔</p><div class="rail-controls"><button type="button" data-rail-prev aria-label="${words("Anterior", "Previous")}">←</button><span class="rail-counter" aria-live="polite" aria-atomic="true"></span><button type="button" data-rail-next aria-label="${words("Siguiente", "Next")}">→</button></div></aside><div class="exhibition-track" tabindex="0" role="region" aria-label="${words("Recorrido horizontal", "Horizontal gallery")}: ${p.title}" aria-describedby="rail-instruction"><section class="rail-chapter" id="editorial" data-rail-chapter aria-label="Editorial">${editorial.map((photo, i) => railPhoto(photo, "editorial", i, { eager: i === 0 })).join("")}</section><section class="rail-note" id="concepto" data-rail-panel data-rail-chapter aria-labelledby="concept-title"><p class="rail-kicker">${words("El concepto", "The concept")}</p><h2 id="concept-title">${escape(t(p.lead))}</h2><p>${escape(t(p.description))}</p><p>${escape(t(p.note))}</p><details><summary>${words("Créditos", "Credits")}</summary>${creditList(p.credits)}</details></section>${film}<section class="rail-chapter" id="proceso" data-rail-chapter aria-label="${words("El proceso", "The process")}">${process}</section><nav class="rail-note rail-next-project" id="siguiente" data-rail-panel aria-label="${words("Siguiente proyecto", "Next project")}"><p class="rail-kicker">${words("Siguiente proyecto", "Next project")}</p><a href="${href(next.slug)}">${next.title} ↗</a><a class="archive-return" href="${href("")}#trabajos">${words("Volver al índice", "Back to index")}</a></nav></div></div>`;
     return shell(
       p.slug,
       `${p.title} — Emilio Lopez`,

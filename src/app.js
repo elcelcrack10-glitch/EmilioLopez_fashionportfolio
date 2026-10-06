@@ -1,33 +1,5 @@
 document.documentElement.classList.add("js");
 
-// The layout lives in the URL, so both views can be shared and revisited.
-const projects = document.querySelector(".projects");
-const viewButtons = [...document.querySelectorAll("[data-view]")];
-function applyView() {
-  if (!projects) return;
-  const view =
-    new URL(location.href).searchParams.get("view") === "index"
-      ? "index"
-      : "story";
-  projects.dataset.layout = view;
-  viewButtons.forEach((button) =>
-    button.setAttribute("aria-pressed", String(button.dataset.view === view)),
-  );
-}
-viewButtons.forEach((button) =>
-  button.addEventListener("click", () => {
-    const url = new URL(location.href);
-    if (button.dataset.view === "index") url.searchParams.set("view", "index");
-    else url.searchParams.delete("view");
-    history.replaceState(null, "", url);
-    applyView();
-    // A shorter index must not leave the reader stranded below its projects.
-    document.querySelector("#trabajos").scrollIntoView({ behavior: "instant" });
-  }),
-);
-window.addEventListener("popstate", applyView);
-applyView();
-
 document.querySelectorAll(".languages a").forEach((link) =>
   link.addEventListener("click", () => {
     const url = new URL(link.href);
@@ -36,34 +8,6 @@ document.querySelectorAll(".languages a").forEach((link) =>
     link.href = url.href;
   }),
 );
-
-// The chapter links also work without JavaScript; this only marks reading position.
-const chapterLinks = [...document.querySelectorAll("[data-reader-link]")];
-if (chapterLinks.length) {
-  const sections = chapterLinks.map((link) =>
-    document.querySelector(link.getAttribute("href")),
-  );
-  let scheduled = false;
-  function markChapter() {
-    const threshold = Math.min(window.innerHeight * 0.3, 240);
-    const current = sections.findLastIndex(
-      (section) => section.getBoundingClientRect().top <= threshold,
-    );
-    chapterLinks.forEach((link, index) => {
-      if (index === current) link.setAttribute("aria-current", "location");
-      else link.removeAttribute("aria-current");
-    });
-    scheduled = false;
-  }
-  function scheduleChapter() {
-    if (scheduled) return;
-    scheduled = true;
-    requestAnimationFrame(markChapter);
-  }
-  window.addEventListener("scroll", scheduleChapter, { passive: true });
-  window.addEventListener("resize", scheduleChapter);
-  markChapter();
-}
 
 const dialog = document.querySelector(".lightbox");
 const viewerImage = dialog.querySelector(".viewer-image");

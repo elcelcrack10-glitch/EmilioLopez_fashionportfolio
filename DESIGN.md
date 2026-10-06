@@ -229,3 +229,31 @@ Primary actions: open a project from either view, switch view, read its
 editorial/concept/process, return to the Index. Preserve URL state, keyboard
 navigation and static/no-JS content. Use existing responsive AVIF/WebP media,
 local Albert Sans and native CSS; no autoplay or animation library.
+
+## Redesign — 6 October 2026: image archive and horizontal reading
+
+Supersedes the large Journal blocks and overlapping three-photo Index above.
+Emilio requests fewer text boxes and a more minimal, image-led portfolio, using
+Webber Represents as an interaction reference. Inspected its desktop/mobile
+homepage, artist profile and selected-work navigation. Adapt the small images,
+negative space, quiet navigation and sideways reading; retain Emilio's own
+photographs, Sans typography, wording and project identities.
+
+- Home: 20 uncropped miniatures, five approved photographs per project, interleaved
+  across a loose, responsive grid. No introductory text panels or oversized hero.
+  Small project names and an accessible project filter identify the four series.
+- Project: a compact title/navigation margin and a native horizontal image rail.
+  Editorial first; concept, credits, film and original process sequence remain
+  available as lateral text/media panels. No repeated large text sections.
+- Input: native touch/trackpad scrolling, previous/next buttons and keyboard.
+  Vertical mouse-wheel movement translates only within the horizontal rail;
+  nested text remains scrollable and browser zoom is never intercepted.
+- Every archive thumbnail opens its matching full-size photo in its project.
+  URL fragments retain the photo/chapter across refresh and language changes.
+- Mobile keeps horizontal reading, with compact navigation above the photographs.
+  No clipping, automatic slides, drag-only controls or motion-dependent content.
+- Project palettes appear in quiet title/accent details on a shared paper canvas.
+  Preserve credits, garment provenance, approved photo/process order and both
+  languages. Keep native film controls and the full-resolution image viewer.
+- Progressive enhancement: real links, visible horizontal scrollbar, all images
+  and texts remain reachable without JavaScript. About/CV content stays intact.

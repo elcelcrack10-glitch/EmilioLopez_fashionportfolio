@@ -2,93 +2,139 @@ import { test, expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 import { projects } from "../src/content.mjs";
 
-test("both views, language switch and direct links preserve context", async ({
+test("archive has five distinct photos per project and preserves filters across languages", async ({
   page,
 }) => {
   await page.goto("/");
-  await expect(page.locator("html")).toHaveAttribute("lang", "es");
-  await expect(page.locator(".project-card")).toHaveCount(4);
-  await page.getByRole("button", { name: "Índice", exact: true }).click();
-  await expect(page.locator(".projects")).toHaveAttribute(
-    "data-layout",
-    "index",
-  );
-  const tops = await page
-    .locator(".project-art")
-    .evaluateAll((nodes) =>
-      nodes.map((n) => Math.round(n.getBoundingClientRect().top)),
+  await expect(page.locator(".archive-image")).toHaveCount(20);
+  for (const project of projects) {
+    const images = page.locator(
+      `.archive-image[data-project="${project.slug}"] img`,
     );
-  expect(new Set(tops).size).toBe(2);
-  for (const card of await page.locator(".project-card").all()) {
-    const photos = card.locator(".project-art .stack-photo");
-    await expect(photos).toHaveCount(3);
-    const sources = await photos
-      .locator("img")
-      .evaluateAll((images) =>
-        images.map((image) => image.getAttribute("src")),
-      );
-    expect(new Set(sources).size).toBe(3);
-    for (const photo of await photos.all()) await expect(photo).toBeVisible();
+    await expect(images).toHaveCount(5);
+    expect(
+      new Set(
+        await images.evaluateAll((nodes) =>
+          nodes.map((n) => n.getAttribute("src")),
+        ),
+      ).size,
+    ).toBe(5);
   }
+  await page.getByRole("button", { name: "COLORES", exact: true }).click();
+  await expect(page.locator(".archive-image:visible")).toHaveCount(5);
   await page.getByRole("link", { name: "EN", exact: true }).click();
-  await expect(page).toHaveURL(/\/en\/\?view=index/);
-  await expect(page.locator(".projects")).toHaveAttribute(
-    "data-layout",
-    "index",
-  );
-  await page.getByRole("link", { name: "View COLORES", exact: true }).click();
-  await expect(page).toHaveURL(/\/en\/colores\//);
-  await expect(page.locator("h1")).toHaveText("COLORES");
+  await expect(page).toHaveURL(/\/en\/\?project=colores/);
+  await expect(page.locator(".archive-image:visible")).toHaveCount(5);
+  await page
+    .getByRole("link", { name: "View COLORES — image 3", exact: true })
+    .click();
+  await expect(page).toHaveURL(/\/en\/colores\/#photo-colores-photo-3/);
+  const target = page.locator("#photo-colores-photo-3");
+  await expect(target).toBeInViewport();
   await page.getByRole("link", { name: "ES", exact: true }).click();
-  await expect(page).toHaveURL(/\/colores\//);
-  await expect(page.locator(".project-hero img")).toHaveAttribute(
+  await expect(page).toHaveURL(/\/colores\/#photo-colores-photo-3/);
+  await expect(target).toBeInViewport();
+  await page.goto("/colores/");
+  await expect(page.locator("#editorial img").first()).toHaveAttribute(
     "src",
     /colores-photo-2-/,
   );
 });
 
-test("photo compositions stay inside each project and the sticky switch returns to the index", async ({
+test("horizontal reading works with buttons, keyboard, wheel and direct photo links", async ({
   page,
 }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
-  for (const width of [320, 768, 1440, 1920]) {
-    await page.setViewportSize({ width, height: 1000 });
-    await page.goto("/");
-    for (const card of await page.locator(".project-card").all()) {
-      const ending = await card.locator(".project-chapter-end").boundingBox();
-      for (const photo of await card.locator(".stack-photo").all()) {
-        const bounds = await photo.boundingBox();
-        expect(bounds.y + bounds.height).toBeLessThan(ending.y);
-      }
-    }
-  }
-  await page
-    .locator('.project-card[data-project="colores"]')
-    .scrollIntoViewIfNeeded();
-  await page.getByRole("button", { name: "Índice", exact: true }).click();
-  await expect
-    .poll(async () => (await page.locator(".work-toolbar").boundingBox()).y)
-    .toBe(0);
-  const cardLink = page.getByRole("link", {
-    name: "Ver Pescadilla",
-    exact: true,
+  await page.goto("/pescadilla/");
+  const track = page.locator(".exhibition-track");
+  const left = () => track.evaluate((e) => e.scrollLeft);
+  await expect(page.locator("[data-rail-prev]")).toBeDisabled();
+  await page.locator("[data-rail-next]").click();
+  await expect.poll(left).toBeGreaterThan(100);
+  await expect(page.locator(".rail-counter")).toHaveText("02 / 29");
+  await track.focus();
+  await page.keyboard.press("Home");
+  await expect.poll(left).toBe(0);
+  await page.keyboard.press("ArrowRight");
+  await expect.poll(left).toBeGreaterThan(100);
+  await page.keyboard.press("End");
+  await expect(page.locator("[data-rail-next]")).toBeDisabled();
+  await expect(page.locator("#siguiente")).toBeInViewport();
+  await expect(page.locator(".rail-counter")).toHaveText("29 / 29");
+  await page.keyboard.press("Home");
+  await expect.poll(left).toBe(0);
+  const bounds = await track.boundingBox();
+  await page.mouse.move(bounds.x + 100, bounds.y + 100);
+  await page.mouse.wheel(0, 500);
+  await expect.poll(left).toBeGreaterThan(100);
+  expect(await page.evaluate(() => window.scrollY)).toBe(0);
+  await page.goto("/pescadilla/#photo-pescadilla-photo-7");
+  await expect(page.locator("#photo-pescadilla-photo-7")).toBeInViewport();
+});
+
+test("mobile visitors can swipe the gallery and scroll expanded notes", async ({
+  browser,
+}) => {
+  const context = await browser.newContext({
+    viewport: { width: 390, height: 844 },
+    isMobile: true,
+    hasTouch: true,
+    reducedMotion: "reduce",
   });
-  await cardLink.focus();
-  expect(
-    await cardLink
-      .locator(".stack-photo")
-      .first()
-      .evaluate((el) => getComputedStyle(el).transitionDuration),
-  ).toBe("0s");
-  await page.keyboard.press("Enter");
-  await expect(page).toHaveURL(/\/pescadilla\//);
+  const page = await context.newPage();
+  try {
+    await page.goto("http://localhost:4173/pescadilla/");
+    const track = page.locator(".exhibition-track");
+    const session = await context.newCDPSession(page);
+    const swipe = async (x1, y1, x2, y2) => {
+      await session.send("Input.dispatchTouchEvent", {
+        type: "touchStart",
+        touchPoints: [{ x: x1, y: y1 }],
+      });
+      for (let step = 1; step <= 10; step++) {
+        await session.send("Input.dispatchTouchEvent", {
+          type: "touchMove",
+          touchPoints: [
+            {
+              x: x1 + ((x2 - x1) * step) / 10,
+              y: y1 + ((y2 - y1) * step) / 10,
+            },
+          ],
+        });
+        await page.waitForTimeout(20);
+      }
+      await session.send("Input.dispatchTouchEvent", {
+        type: "touchEnd",
+        touchPoints: [],
+      });
+    };
+    const bounds = await track.boundingBox();
+    await swipe(330, bounds.y + 140, 60, bounds.y + 140);
+    await expect
+      .poll(() => track.evaluate((el) => el.scrollLeft))
+      .toBeGreaterThan(100);
+    await page.goto("http://localhost:4173/pescadilla/#concepto");
+    const note = page.locator("#concepto");
+    await expect(note).toBeInViewport();
+    await note.locator("summary").tap();
+    const box = await note.boundingBox();
+    const before = await note.evaluate((el) => el.scrollTop);
+    await swipe(box.x + 100, box.y + box.height - 40, box.x + 100, box.y + 70);
+    await expect
+      .poll(() => note.evaluate((el) => el.scrollTop))
+      .toBeGreaterThan(before);
+    await expect(note).toBeInViewport({ ratio: 0.9 });
+    expect(await page.evaluate(() => window.scrollY)).toBe(0);
+  } finally {
+    await context.close();
+  }
 });
 
 test("gallery supports keyboard, focus return and ordered process", async ({
   page,
 }) => {
   await page.goto("/pescadilla/");
-  const cover = page.locator(".project-hero a");
+  const cover = page.locator("#editorial [data-gallery]").first();
   await cover.focus();
   await page.keyboard.press("Enter");
   await expect(page.getByRole("dialog")).toBeVisible();
@@ -101,7 +147,7 @@ test("gallery supports keyboard, focus return and ordered process", async ({
   await page.keyboard.press("Escape");
   await expect(page.getByRole("dialog")).not.toBeVisible();
   await expect(cover).toBeFocused();
-  const process = page.locator(".process-chapter").last().locator("img");
+  const process = page.locator(".rail-process").last().locator("img");
   await expect(process).toHaveCount(11);
   await expect(process.first()).toHaveAttribute(
     "alt",
@@ -113,34 +159,30 @@ test("gallery supports keyboard, focus return and ordered process", async ({
   );
 });
 
-test("project chapters stay visible and preserve the reading position across languages", async ({
+test("lateral concept, credits and process stay accessible across languages", async ({
   page,
 }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/feel-marni/");
-  const reader = page.getByRole("navigation", { name: "Dentro del proyecto" });
-  await reader.getByRole("link", { name: "Concepto", exact: true }).click();
+  const nav = page.getByRole("navigation", { name: "Dentro del proyecto" });
+  await nav.getByRole("link", { name: "Concepto", exact: true }).click();
+  await expect(page.locator("#concepto")).toBeInViewport();
   await expect(
-    reader.getByRole("link", { name: "Concepto", exact: true }),
+    nav.getByRole("link", { name: "Concepto", exact: true }),
   ).toHaveAttribute("aria-current", "location");
-  const bounds = await page.locator("#concepto").boundingBox();
-  const navBounds = await reader.boundingBox();
-  expect(navBounds.y).toBe(0);
-  expect(bounds.y).toBeGreaterThanOrEqual(navBounds.height);
-  await reader.getByRole("link", { name: "Proceso", exact: true }).click();
-  await expect(
-    reader.getByRole("link", { name: "Proceso", exact: true }),
-  ).toHaveAttribute("aria-current", "location");
+  await page.locator("#concepto summary").click();
+  await expect(page.locator("#concepto details")).toHaveAttribute("open", "");
+  await expect(page.locator("#concepto .credits")).toContainText("Luda Pellat");
+  await nav.getByRole("link", { name: "Proceso", exact: true }).click();
+  await expect(page.locator("#proceso-1")).toBeInViewport();
   await page.getByRole("link", { name: "EN", exact: true }).click();
   await expect(page).toHaveURL(/\/en\/feel-marni\/#proceso/);
+  await expect(page.locator("#proceso-1")).toBeInViewport();
   await expect(
-    page.locator('[data-reader-link][href="#proceso"]'),
+    page.locator('[data-rail-link][href="#proceso"]'),
   ).toHaveAttribute("aria-current", "location");
-  await page.getByRole("link", { name: "Back to index" }).click();
-  await expect(page.locator(".projects")).toHaveAttribute(
-    "data-layout",
-    "index",
-  );
+  await page.getByRole("link", { name: "Index", exact: true }).click();
+  await expect(page.locator(".archive-image")).toHaveCount(20);
 });
 
 test("contact, CV and film work without automatic video downloads", async ({
@@ -152,11 +194,11 @@ test("contact, CV and film work without automatic video downloads", async ({
     if (r.url().includes(".mp4")) videoRequests.push(r.url());
   });
   await page.goto("/feel-marni/");
-  await expect(page.locator(".project-hero img")).toHaveAttribute(
+  await expect(page.locator("#editorial img").first()).toHaveAttribute(
     "src",
     /marni-photo-1-/,
   );
-  await expect(page.locator(".editorial-gallery img").nth(1)).toHaveAttribute(
+  await expect(page.locator("#editorial img").nth(2)).toHaveAttribute(
     "src",
     /marni-photo-3-/,
   );
@@ -265,9 +307,11 @@ test("core content and navigation work without JavaScript", async ({
   const context = await browser.newContext({ javaScriptEnabled: false });
   const page = await context.newPage();
   await page.goto("http://localhost:4173/");
-  await page.getByRole("link", { name: "Ver Manuela", exact: true }).click();
+  await page
+    .getByRole("link", { name: "Ver Manuela — imagen 1", exact: true })
+    .click();
   await expect(page.locator("h1")).toHaveText("Manuela");
-  await expect(page.locator(".process-section")).toBeVisible();
+  await expect(page.locator("#proceso")).toBeVisible();
   await context.close();
 });
 

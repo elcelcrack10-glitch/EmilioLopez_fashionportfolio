@@ -16,8 +16,9 @@ Abrir **http://localhost:4173**. `npm run preview` sirve la versión ya generada
 - `src/content.mjs`: textos ES/EN, proyectos, créditos y fotografías, con origen y pies de foto.
 - `src/templates.mjs`: generación de las páginas.
 - `src/style.css`: diseño y adaptación a pantallas.
-- `src/app.js`: selector Recorrido/Índice y visor de fotografías.
-- `src/persona.css` y `src/project-worlds.css`: diseños de persona y cada proyecto.
+- `src/app.js`: cambio de idioma y visor de fotografías.
+- `src/persona.css`: diseño de la página Persona.
+- `src/exhibition.css` y `src/exhibition.js`: índice de fotografías, filtros y recorridos horizontales.
 - `review/`: decisiones editoriales y verificaciones locales, excluidas del repositorio público.
 
 Después de cambiar textos o estilos, ejecutar `npm run build` y recargar el navegador.
