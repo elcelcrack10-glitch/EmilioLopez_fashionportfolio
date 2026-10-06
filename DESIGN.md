@@ -336,22 +336,16 @@ Follow-up on the Webber-style project rail.
 - The sideways cue under the margin is removed; the counter stays pinned to
   the foot of the margin.
 
-## About palette — 6 October 2026: periwinkle, butter and khaki
+## About palette — 6 October 2026: tried, then reverted to monochrome
 
-Emilio supplied a three-colour palette for About: periwinkle blue, butter
-yellow and khaki. The palette image did not reach disk, so the values are
-visual approximations (`#8c96ef`, `#f6efb3`, `#c2bb99`), as the project already
-does for other swatches.
+Emilio supplied a three-colour palette (periwinkle, butter yellow, khaki) for
+About. It was implemented and then withdrawn: the pastel tones never reach 3:1
+against one another and a huge name still counts as text for WCAG, so the title
+could not carry the colours without a much darker block. Emilio asked to return
+to black and white.
 
-- The page canvas is butter yellow; rules turn a muted khaki-gold.
-- A single periwinkle tone carries both the hinge and the contact block. An
-  earlier, deeper blue read as a different tone and was dropped.
-- The three pastel colours never reach 3:1 against one another, and a huge name
-  still counts as text for WCAG. Against the light periwinkle the name
-  therefore reads in dark ink rather than butter yellow and khaki.
-- The contact block keeps dark ink and a dark indigo signature, so it contrasts
-  with the page while its own wordmark stays readable. The CV button turns
-  khaki, which brings the third colour in.
+The page is monochrome again — light grey canvas, near-black ink, black contact
+block with a quiet grey signature. The palette variables are gone.
 
 ## Contact arrows — 6 October 2026: a vector arrow
 

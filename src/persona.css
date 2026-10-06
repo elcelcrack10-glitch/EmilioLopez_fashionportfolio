@@ -22,17 +22,15 @@
     U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
 .persona-page {
-  --palette-blue: #8c96ef;
-  --palette-yellow: #f6efb3;
-  --palette-khaki: #c2bb99;
-  --paper: var(--palette-yellow);
-  --ink: #141414;
-  --muted: #5a5b3a;
-  --line: #b3a86a;
+  --paper: #e9e8e4;
+  --ink: #111110;
+  --muted: #5b5a56;
+  --line: #c8c7c2;
+  --block: #101010;
   background: var(--paper);
 }
 html:has(.persona-page) {
-  background: #f6efb3;
+  background: #e9e8e4;
 }
 /* The reference's typeface for titles, subtitles and copy, not the name. */
 .persona-page main,
@@ -53,8 +51,6 @@ html:has(.persona-page) {
   justify-content: space-between;
   gap: 24px;
   overflow: hidden;
-  background: var(--palette-blue);
-  color: var(--ink);
 }
 .about-hero-top,
 .about-hero-foot {
@@ -114,16 +110,16 @@ html:has(.persona-page) {
   gap: 10px;
   min-height: 44px;
   padding: 12px 18px;
-  background: var(--palette-khaki);
-  color: var(--ink);
+  background: #111110;
+  color: #e9e8e4;
   text-decoration: none;
   border: 0;
 }
 .persona-page .bio-label .text-link .file-label {
-  color: #3d3a22;
+  color: #b9b7ae;
 }
 .persona-page .bio-label .text-link:hover {
-  background: #b3ab86;
+  background: #000;
 }
 .persona-page .bio-copy p {
   font-size: clamp(17px, 1.5vw, 22px);
@@ -161,10 +157,11 @@ html:has(.persona-page) {
 
 /* Contact in black, closing with a quiet wordmark. */
 .persona-page footer {
-  background: var(--palette-blue);
-  color: var(--ink);
-  --muted: #222a5e;
-  --line: rgb(20 20 20 / 0.28);
+  background: var(--block);
+  color: var(--paper);
+  --ink: #e9e8e4;
+  --muted: #9c9b95;
+  --line: rgb(233 232 228 / 0.22);
   padding: 64px var(--page) 24px;
 }
 .persona-page footer .contact-heading {
@@ -183,7 +180,7 @@ html:has(.persona-page) {
   white-space: nowrap;
   text-align: center;
   margin: 72px 0 0;
-  color: #1e2350;
+  color: #77746e;
 }
 .persona-page a:focus-visible {
   outline: 2px solid currentColor;
