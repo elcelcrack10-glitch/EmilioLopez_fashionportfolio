@@ -319,3 +319,17 @@ name stays in Albert Sans.
 Contact links in the footer (the `Contacto` heading and the address) now open
 Gmail's compose window to the portfolio address in a new tab, instead of a
 `mailto:` that would launch the visitor's own mail client — Apple Mail on a Mac.
+
+## Project page — 6 October 2026: quieter editorial, typewriter margin
+
+Follow-up on the Webber-style project rail.
+
+- The editorial photographs lose their captions, so each row reads clean.
+- The whole left margin — index link, date, subtitle, chapter links, sideways
+  cue and counter — is set in Courier Prime, a typewriter face self-hosted
+  under OFL and preloaded on project routes.
+- The project title keeps Albert Sans but moves to weight 600, matching the
+  monumental name on About.
+- The concept panel drops the lead headline; only the small `Concepto` label
+  stays, now in the typewriter face.
+- Next project becomes a plain underlined text link, without the arrow.
