@@ -1,318 +1,264 @@
-/* About page: Concrete's quiet pacing, Emilio's supplied olive palette. */
+/* About page: a minimal, monochrome field with a monumental name. */
 .persona-page {
-  --paper: #eeeddf;
-  --ink: #353b24;
-  --muted: #4c5139;
-  --line: #b6b99e;
-  --wash: #e2dec1;
-  --accent: #aa9d39;
-  --persona-sage: #c2c7a8;
-  --persona-olive: #626746;
+  --paper: #e9e8e4;
+  --ink: #111110;
+  --muted: #5b5a56;
+  --line: #c8c7c2;
+  --block: #101010;
+  background: var(--paper);
+}
+html:has(.persona-page) {
+  background: #e9e8e4;
 }
 .persona-page .site-header {
-  background: var(--persona-sage);
-  border-bottom: 0;
+  background: var(--paper);
+  border-bottom: 1px solid var(--line);
 }
-.persona-page .about-heading {
-  min-height: min(780px, calc(100svh - 100px));
-  background: var(--persona-sage);
-  padding: 80px var(--page) 32px;
+
+/* Monumental name, sized to run edge to edge. */
+.persona-page .about-hero {
+  min-height: clamp(560px, calc(100svh - 76px), 1000px);
+  padding: 24px var(--page) 28px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  text-align: center;
-}
-.persona-page .about-heading > .eyebrow {
-  margin-bottom: 32px;
-}
-.persona-page .about-heading h1 {
-  font-size: clamp(100px, 23vw, 360px);
-  font-weight: 400;
-  letter-spacing: -0.08em;
-  line-height: 0.92;
-  margin: 0 0 72px;
-  padding-right: 0.08em;
-}
-.persona-page .about-heading h1::first-line {
-  font-weight: 400;
-}
-.persona-intro {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  align-items: end;
+  justify-content: space-between;
   gap: 24px;
+  overflow: hidden;
+}
+.about-hero-top,
+.about-hero-foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 24px;
+}
+.about-hero-foot {
+  align-items: flex-end;
   font-size: 13px;
   line-height: 1.5;
 }
-.persona-intro > p:first-child {
-  text-align: left;
+.about-hero-foot > p {
+  flex: 1;
+  max-width: 24em;
 }
-.persona-intro > p:last-child {
+.about-hero-foot > p:last-child {
   text-align: right;
 }
-.persona-read {
+.about-scroll {
+  flex: none;
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  gap: 24px;
+  gap: 10px;
   min-height: 44px;
-  justify-self: center;
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  text-align: center;
 }
-.persona-read span {
-  font-size: 28px;
+.persona-page .about-name {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  margin: 0;
+  font-size: clamp(56px, 25vw, 400px);
+  font-weight: 600;
+  line-height: 0.82;
+  letter-spacing: -0.05em;
+  text-transform: uppercase;
+}
+
+/* A single wide statement, then the biography. */
+.persona-page .about-lead {
+  padding: 104px var(--page) 80px;
+  display: grid;
+  grid-template-columns: 1fr minmax(0, 2.4fr);
+  gap: 8vw;
+  align-items: start;
+}
+.about-lead-copy {
+  margin: 0;
+  font-size: clamp(24px, 3vw, 46px);
+  line-height: 1.25;
+  letter-spacing: -0.03em;
 }
 .persona-page .biography {
-  grid-template-columns: 1fr minmax(0, 2fr) 1fr;
-  gap: 5vw;
+  grid-template-columns: 1fr minmax(0, 2fr);
+  gap: 8vw;
   margin: 0;
-  padding: 144px var(--page) 120px;
-  border: 0;
-  scroll-margin-top: 32px;
+  padding: 72px var(--page) 104px;
+  border-top: 1px solid var(--line);
 }
 .persona-page .bio-label {
-  padding-top: 8px;
+  padding-top: 6px;
 }
 .persona-page .bio-label > p:nth-child(2) {
-  max-width: 15em;
+  max-width: 18em;
 }
 .persona-page .bio-label .text-link {
   margin-top: 28px;
-  flex-wrap: wrap;
-  background: var(--accent);
-  --ink: #242a17;
-  --muted: var(--ink);
-  color: var(--ink);
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 12px 18px;
+  background: #111110;
+  color: #e9e8e4;
+  text-decoration: none;
   border: 0;
-  padding: 12px 16px;
 }
-.persona-page .bio-copy {
-  grid-column: 2 / 4;
-  max-width: 720px;
+.persona-page .bio-label .text-link .file-label {
+  color: #b9b7ae;
+}
+.persona-page .bio-label .text-link:hover {
+  background: #000;
 }
 .persona-page .bio-copy p {
-  font-size: clamp(19px, 1.7vw, 26px);
-  line-height: 1.65;
-  letter-spacing: -0.015em;
-  margin-bottom: 36px;
-}
-.persona-page .bio-copy p:first-child {
-  font-size: clamp(23px, 2.1vw, 32px);
-  line-height: 1.45;
+  font-size: clamp(17px, 1.5vw, 22px);
+  line-height: 1.7;
+  letter-spacing: -0.01em;
+  margin-bottom: 28px;
+  max-width: 62ch;
 }
 .persona-page .bio-copy p:last-child {
   margin-bottom: 0;
 }
-.persona-studio {
-  background: var(--wash);
-  padding: 56px 8vw 96px;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  align-items: start;
-  gap: 48px 10vw;
-}
-.persona-studio-label {
-  grid-column: 1/-1;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 24px;
-  margin-bottom: 32px;
-}
-.persona-studio-label .text-link {
-  font-size: 12px;
-}
-.persona-study {
-  width: 100%;
-}
-.persona-study img {
-  width: 100%;
-  height: auto;
-  background: transparent;
-}
-.persona-study-toile {
-  max-width: 440px;
-  justify-self: end;
-}
-.persona-study-print {
-  max-width: 360px;
-  margin-top: 180px;
-}
-.persona-study figcaption {
-  margin-top: 16px;
-  font-size: 11px;
-  line-height: 1.6;
-}
+
+/* Experience as a quiet index. */
 .persona-page .experience {
   margin: 0;
-  padding: 104px var(--page) 120px;
+  padding: 0 var(--page) 128px;
 }
 .persona-page .experience .section-heading {
-  border-top: 0;
-  padding-top: 0;
-  margin-bottom: 56px;
+  border-top: 1px solid var(--line);
+  padding-top: 24px;
+  margin-bottom: 0;
 }
-.persona-page .experience .section-heading h2 {
-  font-size: clamp(40px, 5vw, 76px);
-  font-weight: 300;
+.persona-page .section-heading h2 {
+  font-size: clamp(30px, 3.6vw, 58px);
+  font-weight: 500;
+  letter-spacing: -0.035em;
 }
 .persona-page .experience-row {
-  grid-template-columns: 1fr 2fr 1fr;
-  padding: 32px 0;
+  border-bottom: 1px solid var(--line);
+  padding: 30px 0;
 }
 .persona-page .experience-row h3 {
-  font-size: clamp(18px, 2vw, 28px);
-  font-weight: 400;
+  font-weight: 450;
 }
+
+/* Contact in black, closing with a quiet wordmark. */
 .persona-page footer {
-  background: var(--persona-olive);
+  background: var(--block);
   color: var(--paper);
-  --ink: #eeeddf;
-  --muted: #eeeddf;
-  padding: 56px var(--page) 20px;
+  --ink: #e9e8e4;
+  --muted: #9c9b95;
+  --line: rgb(233 232 228 / 0.22);
+  padding: 64px var(--page) 24px;
 }
 .persona-page footer .contact-heading {
-  font-size: clamp(40px, 5.5vw, 88px);
   justify-content: flex-start;
-  gap: 40px;
+  gap: 48px;
   margin: 24px 0 72px;
 }
 .persona-page .footer-bottom {
-  border-top: 1px solid rgb(238 237 223 / 0.4);
-  padding-top: 24px;
+  border-top: 1px solid var(--line);
 }
 .persona-signature {
-  font-size: 14.7vw;
+  font-size: clamp(40px, 9vw, 140px);
   font-weight: 600;
-  line-height: 0.86;
-  letter-spacing: -0.075em;
+  line-height: 1;
+  letter-spacing: -0.05em;
   white-space: nowrap;
   text-align: center;
-  margin: 104px 0 0;
-  padding-right: 0.075em;
-  color: var(--wash);
+  margin: 72px 0 0;
+  color: #77746e;
 }
 .persona-page a:focus-visible {
   outline: 2px solid currentColor;
   outline-offset: 5px;
 }
 @media (hover: hover) {
-  .persona-read:hover {
+  .about-scroll:hover {
     text-decoration: underline;
     text-underline-offset: 6px;
   }
 }
 @media (max-width: 1024px) {
+  .persona-page .about-lead,
   .persona-page .biography {
-    grid-template-columns: 1fr 2fr;
+    grid-template-columns: 1fr minmax(0, 1.6fr);
     gap: 6vw;
-  }
-  .persona-page .bio-copy {
-    grid-column: 2;
   }
 }
 @media (max-width: 700px) {
-  .persona-page .about-heading {
-    min-height: 540px;
-    padding: 64px var(--page) 24px;
+  .persona-page .about-hero {
+    min-height: calc(100svh - 96px);
+    padding: 12px var(--page) 20px;
+    gap: 16px;
   }
-  .persona-page .about-heading > .eyebrow {
-    font-size: 10px;
-    margin-bottom: 48px;
+  .persona-page .about-name {
+    font-size: 25.5vw;
   }
-  .persona-page .about-heading h1 {
-    font-size: 23vw;
-    margin-bottom: 64px;
+  .about-hero-foot {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 12px;
   }
-  .persona-intro {
-    grid-template-columns: 1fr 1fr;
-    gap: 24px;
-    font-size: 11px;
+  .about-hero-foot > p {
+    max-width: none;
   }
-  .persona-intro > p:last-child {
-    grid-row: 1;
-    grid-column: 2;
+  .about-hero-foot > p:last-child {
+    text-align: left;
   }
-  .persona-read {
-    grid-column: 1/-1;
-    grid-row: 2;
+  .about-scroll {
+    min-height: 0;
+    font-size: 13px;
+  }
+  .persona-page .about-lead {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    padding: 64px var(--page) 40px;
+  }
+  .about-lead-copy {
+    font-size: 24px;
   }
   .persona-page .biography {
     display: flex;
     flex-direction: column;
-    gap: 48px;
-    padding: 72px var(--page);
-  }
-  .persona-page .bio-label {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px 24px;
-    align-items: start;
+    gap: 36px;
+    padding: 56px var(--page) 64px;
   }
   .persona-page .bio-label > p:nth-child(2) {
     margin: 0;
-    font-size: 12px;
   }
   .persona-page .bio-label .text-link {
     margin-top: 8px;
-    grid-column: 1/-1;
     width: fit-content;
   }
   .persona-page .bio-copy p {
-    font-size: 18px;
-    margin-bottom: 28px;
-  }
-  .persona-page .bio-copy p:first-child {
-    font-size: 23px;
-  }
-  .persona-studio {
-    padding: 40px var(--page) 56px;
-    gap: 40px;
-    grid-template-columns: 1fr;
-  }
-  .persona-studio-label {
-    display: block;
-    margin-bottom: 0;
-  }
-  .persona-studio-label .text-link {
-    margin-top: 16px;
-  }
-  .persona-study-toile {
-    width: 80%;
-    justify-self: start;
-  }
-  .persona-study-print {
-    width: 80%;
-    justify-self: end;
-    margin-top: 0;
-  }
-  .persona-study figcaption {
-    font-size: 10px;
+    font-size: 17px;
+    margin-bottom: 24px;
   }
   .persona-page .experience {
-    padding: 64px var(--page);
-  }
-  .persona-page .experience .section-heading {
-    margin-bottom: 32px;
+    padding: 0 var(--page) 72px;
   }
   .persona-page .experience-row {
     grid-template-columns: 80px 1fr;
-    gap: 12px 20px;
-    padding: 24px 0;
+    gap: 8px 20px;
+    padding: 22px 0;
   }
   .persona-page .experience-row > span:last-child {
     grid-column: 2;
     text-align: left;
   }
   .persona-page footer {
-    padding-top: 40px;
+    padding-top: 48px;
   }
   .persona-page footer .contact-heading {
-    font-size: 40px;
-    margin-bottom: 48px;
+    margin-bottom: 40px;
     gap: 16px;
   }
   .persona-signature {
-    margin-top: 64px;
-    font-size: 14.7vw;
+    margin-top: 48px;
   }
 }

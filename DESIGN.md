@@ -289,3 +289,23 @@ written as percentages, so the field scales with the viewport.
   captions stay hidden and the photographs remain the content.
 - Every photograph still opens its matching photo in its project, in both
   languages. No captions, filters, count or autoplay are reintroduced.
+
+## About — 6 October 2026: monumental name, monochrome field
+
+Emilio asked to take ianaldous.com as the guide for About. Inspected its
+homepage at desktop width: a monumental uppercase name set edge to edge, a
+monochrome grey canvas, small precise labels and a masonry grid of work.
+Adapted the typographic attitude rather than the portfolio grid, because About
+holds no project images.
+
+- Hero: the name runs edge to edge as the only `h1`, near-black on a light grey
+  canvas, with small role and index labels above and a short statement row
+  below.
+- Sections read as a quiet index: a wide introduction, the biography and the
+  experience rows, separated by hairline rules with generous space.
+- The palette is monochrome (light grey canvas, near-black ink, black contact
+  block). The olive/sage palette is retired on this page to follow the
+  reference; project pages keep their own tones.
+- Content, both languages, the CV download, the contact links and the biography
+  remain intact. No new font, script or image. The closing wordmark stays as a
+  quiet grey signature, darkened just enough to meet contrast.
