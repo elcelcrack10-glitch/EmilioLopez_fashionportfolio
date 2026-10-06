@@ -13,6 +13,53 @@ export const pathFor = (slug, lang) =>
   `${lang === "en" ? "/en" : ""}/${slug ? `${slug}/` : ""}`;
 const arrow = '<span aria-hidden="true">↗</span>';
 const number = (i) => String(i + 1).padStart(2, "0");
+// A dispersed field: every photograph owns an empty cell of a loose lattice and
+// is jittered inside it, so the composition reads as scattered yet never
+// overlaps. Everything is a percentage, so the field scales with the viewport.
+function scatterLayout(ratios) {
+  const aspect = 0.64;
+  const columns = 5;
+  const rows = 8;
+  const padding = 0.9;
+  const cellWidth = 100 / columns;
+  const cellHeight = 100 / rows;
+  let seed = 20261006;
+  const random = () => {
+    seed = (seed * 1664525 + 1013904223) >>> 0;
+    return seed / 4294967296;
+  };
+  const cells = [];
+  for (let row = 0; row < rows; row++)
+    for (let column = 0; column < columns; column++)
+      cells.push({ row, column });
+  for (let i = cells.length - 1; i > 0; i--) {
+    const j = Math.floor(random() * (i + 1));
+    [cells[i], cells[j]] = [cells[j], cells[i]];
+  }
+  return cells
+    .slice(0, ratios.length)
+    .sort((a, b) => a.row - b.row || a.column - b.column)
+    .map((cell, i) => {
+      const maxWidth = cellWidth * padding;
+      const maxHeight = cellHeight * padding;
+      const ratio = ratios[i];
+      const width = Math.min(maxWidth, maxHeight / (ratio * aspect));
+      const imageHeight = width * ratio * aspect;
+      return {
+        x: +(
+          cell.column * cellWidth +
+          (cellWidth - maxWidth) / 2 +
+          (maxWidth - width) * random()
+        ).toFixed(2),
+        y: +(
+          cell.row * cellHeight +
+          (cellHeight - maxHeight) / 2 +
+          (maxHeight - imageHeight) * random()
+        ).toFixed(2),
+        w: +width.toFixed(2),
+      };
+    });
+}
 export function renderer(lang, manifest) {
   const t = (value) => (typeof value === "string" ? value : value[lang]);
   const words = (es, en) => (lang === "es" ? es : en);
@@ -45,24 +92,32 @@ export function renderer(lang, manifest) {
     const languageLinks = siteURL
       ? `<link rel="canonical" href="${escape(canonical)}"><link rel="alternate" hreflang="${otherLang}" href="${escape(absoluteSiteURL(pathFor(slug, otherLang)))}">`
       : "";
-    return `<!doctype html><html lang="${lang}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>${escape(title)}</title><meta name="description" content="${escape(description)}"><meta name="theme-color" content="${isAbout ? "#c2c7a8" : "#f3f1ec"}"><meta property="og:title" content="${escape(title)}"><meta property="og:description" content="${escape(description)}"><meta property="og:type" content="website">${cover ? `<meta property="og:image" content="${escape(siteURL ? absoluteSiteURL(manifest[cover.id].src) : manifest[cover.id].src)}">` : ""}<link rel="icon" type="image/svg+xml" href="/favicon.svg">${languageLinks}<link rel="preload" href="/fonts/albert-sans-latin-variable.woff2" as="font" type="font/woff2" crossorigin><link rel="stylesheet" href="/style.css">${isProject || isHome ? '<link rel="stylesheet" href="/exhibition.css">' : ""}${isProject ? '<script src="/exhibition.js" defer></script>' : ""}${isAbout ? '<link rel="stylesheet" href="/persona.css">' : ""}<script src="/app.js" defer></script></head><body id="top"${isProject ? ` class="exhibition-page" data-project="${slug}"` : isHome ? ' class="archive-page"' : isAbout ? ' class="persona-page"' : ""}><a class="skip-link" href="#main">${words("Saltar al contenido", "Skip to content")}</a><header class="site-header"><a class="wordmark" href="${href("")}">Emilio Lopez<span>${words("Diseñador de moda", "Fashion designer")}</span></a><nav aria-label="${words("Navegación principal", "Main navigation")}"><a href="${href("")}#trabajos" ${slug !== "sobre-mi" ? 'aria-current="page"' : ""}>${words("Trabajo", "Work")}</a><a href="${href("sobre-mi")}" ${slug === "sobre-mi" ? 'aria-current="page"' : ""}>${words("Sobre mí", "About")}</a><a href="#contacto">${words("Contacto", "Contact")}</a></nav><div class="languages" aria-label="${words("Idioma", "Language")}"><a href="${pathFor(slug, "es")}" lang="es" ${lang === "es" ? 'aria-current="true"' : ""}>ES</a><span aria-hidden="true">/</span><a href="${pathFor(slug, "en")}" lang="en" ${lang === "en" ? 'aria-current="true"' : ""}>EN</a></div></header><main id="main">${content}</main>${footer(isAbout)}<dialog class="lightbox" aria-label="${words("Visor de fotografías", "Photo viewer")}"><div class="viewer-toolbar"><span class="viewer-count" aria-live="polite"></span><button type="button" data-close>${words("Cerrar", "Close")} <span aria-hidden="true">×</span></button></div><div class="viewer-stage"><button type="button" data-prev aria-label="${words("Foto anterior", "Previous photo")}">←</button><img class="viewer-image" alt=""><button type="button" data-next aria-label="${words("Foto siguiente", "Next photo")}">→</button></div><p class="viewer-caption" aria-live="polite"></p></dialog></body></html>`;
+    return `<!doctype html><html lang="${lang}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>${escape(title)}</title><meta name="description" content="${escape(description)}"><meta name="theme-color" content="${isAbout ? "#c2c7a8" : "#f3f1ec"}"><meta property="og:title" content="${escape(title)}"><meta property="og:description" content="${escape(description)}"><meta property="og:type" content="website">${cover ? `<meta property="og:image" content="${escape(siteURL ? absoluteSiteURL(manifest[cover.id].src) : manifest[cover.id].src)}">` : ""}<link rel="icon" type="image/svg+xml" href="/favicon.svg">${languageLinks}<link rel="preload" href="/fonts/albert-sans-latin-variable.woff2" as="font" type="font/woff2" crossorigin><link rel="stylesheet" href="/style.css">${isProject || isHome ? '<link rel="stylesheet" href="/exhibition.css">' : ""}${isProject ? '<script src="/exhibition.js" defer></script>' : ""}${isHome ? '<script src="/home.js" defer></script>' : ""}${isAbout ? '<link rel="stylesheet" href="/persona.css">' : ""}<script src="/app.js" defer></script></head><body id="top"${isProject ? ` class="exhibition-page" data-project="${slug}"` : isHome ? ' class="archive-page"' : isAbout ? ' class="persona-page"' : ""}><a class="skip-link" href="#main">${words("Saltar al contenido", "Skip to content")}</a><header class="site-header"><a class="wordmark" href="${href("")}">Emilio Lopez<span>${words("Diseñador de moda", "Fashion designer")}</span></a><nav aria-label="${words("Navegación principal", "Main navigation")}"><a href="${href("")}#trabajos" ${slug !== "sobre-mi" ? 'aria-current="page"' : ""}>${words("Trabajo", "Work")}</a><a href="${href("sobre-mi")}" ${slug === "sobre-mi" ? 'aria-current="page"' : ""}>${words("Sobre mí", "About")}</a><a href="#contacto">${words("Contacto", "Contact")}</a></nav><div class="languages" aria-label="${words("Idioma", "Language")}"><a href="${pathFor(slug, "es")}" lang="es" ${lang === "es" ? 'aria-current="true"' : ""}>ES</a><span aria-hidden="true">/</span><a href="${pathFor(slug, "en")}" lang="en" ${lang === "en" ? 'aria-current="true"' : ""}>EN</a></div></header><main id="main">${content}</main>${footer(isAbout)}<dialog class="lightbox" aria-label="${words("Visor de fotografías", "Photo viewer")}"><div class="viewer-toolbar"><span class="viewer-count" aria-live="polite"></span><button type="button" data-close>${words("Cerrar", "Close")} <span aria-hidden="true">×</span></button></div><div class="viewer-stage"><button type="button" data-prev aria-label="${words("Foto anterior", "Previous photo")}">←</button><img class="viewer-image" alt=""><button type="button" data-next aria-label="${words("Foto siguiente", "Next photo")}">→</button></div><p class="viewer-caption" aria-live="polite"></p></dialog></body></html>`;
   }
   function home() {
-    const rows = projects
-      .map((p, projectIndex) => {
-        const cover = p.photos[p.cover || 0];
-        const rest = p.photos.filter((photo) => photo !== cover);
-        const selection = [cover, rest[0], rest[1], rest[3], rest[5]];
-        const photos = selection
-          .map((photo, i) => {
-            const media = manifest[photo.id];
-            return `<figure class="archive-image" style="--image-ratio:${media.width / media.height}"><a href="${href(p.slug)}#photo-${photo.id}" aria-label="${words("Ver", "View")} ${p.title} — ${words("imagen", "image")} ${i + 1}">${img(photo, projectIndex === 0, "(max-width: 700px) 260px, 340px")}</a></figure>`;
-          })
-          .join("");
-        return `<div class="archive-row" data-project="${p.slug}" role="region" aria-label="${p.title}" tabindex="0">${photos}</div>`;
+    const selectionFor = (project) => {
+      const cover = project.photos[project.cover || 0];
+      const rest = project.photos.filter((photo) => photo !== cover);
+      return [cover, rest[0], rest[1], rest[3], rest[5]].filter(Boolean);
+    };
+    const columns = projects.map(selectionFor);
+    const items = [];
+    for (let i = 0; i < 5; i++)
+      for (let j = 0; j < projects.length; j++)
+        if (columns[j][i])
+          items.push({ project: projects[j], photo: columns[j][i], index: i });
+    const positions = scatterLayout(
+      items.map(
+        ({ photo }) => manifest[photo.id].height / manifest[photo.id].width,
+      ),
+    );
+    const pieces = items
+      .map(({ project, photo, index }, i) => {
+        const { x, y, w } = positions[i];
+        return `<a class="archive-piece" href="${href(project.slug)}#photo-${photo.id}" data-project="${project.slug}" style="--x:${x}%;--y:${y}%;--w:${w}%" aria-label="${words("Ver", "View")} ${project.title} — ${words("imagen", "image")} ${index + 1}">${img(photo, i < 4, "(max-width: 700px) 44vw, 17vw")}<span class="archive-label" aria-hidden="true">${project.title}<em>${project.year}</em></span></a>`;
       })
       .join("");
-    const content = `<section class="image-archive" id="trabajos" aria-labelledby="home-title"><h1 class="sr-only" id="home-title">${words("Portfolio de Emilio Lopez", "Emilio Lopez portfolio")}</h1>${rows}</section>`;
+    const content = `<section class="image-archive" id="trabajos" aria-labelledby="home-title"><h1 class="sr-only" id="home-title">${words("Portfolio de Emilio Lopez", "Emilio Lopez portfolio")}</h1><div class="archive-field">${pieces}</div></section>`;
     return shell(
       "",
       "Emilio Lopez — Fashion portfolio",

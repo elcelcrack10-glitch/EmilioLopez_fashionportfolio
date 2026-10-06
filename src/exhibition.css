@@ -60,47 +60,70 @@ html:has(.exhibition-page) {
   display: none;
 }
 
-/* Each project is one aligned row of uncropped photographs. */
+/* A dispersed field of uncropped photographs. */
 .image-archive {
-  --thumbnail-height: clamp(140px, 16vw, 220px);
-  padding: 48px 0 72px;
-  display: grid;
-  gap: 64px;
+  padding: 0;
 }
-.archive-row {
-  display: flex;
-  align-items: flex-start;
-  gap: clamp(16px, 2.2vw, 32px);
-  padding: 8px var(--page) 16px;
-  overflow-x: auto;
-  scroll-snap-type: x proximity;
-  scroll-padding-inline: var(--page);
-  scrollbar-width: thin;
-  scrollbar-color: var(--line) transparent;
+.archive-field {
+  position: relative;
+  aspect-ratio: 100 / 156.25;
+  margin: clamp(8px, 2vw, 40px) var(--page) clamp(96px, 14vw, 220px);
 }
-.archive-image {
-  flex: none;
-  width: calc(var(--thumbnail-height) * var(--image-ratio));
-  scroll-snap-align: start;
-}
-.archive-image a,
-.archive-image picture {
+.archive-piece {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  width: var(--w);
   display: block;
-  height: var(--thumbnail-height);
+  z-index: 1;
+  transform: translate3d(var(--px, 0), var(--py, 0), 0) scale(var(--zoom, 1));
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
 }
-.archive-image img {
+.archive-piece picture,
+.archive-piece img {
   display: block;
   width: 100%;
-  height: 100%;
-  object-fit: contain;
-  background: transparent;
+  height: auto;
   outline: none;
-  transition: opacity 0.15s ease;
 }
-@media (hover: hover) {
-  .archive-image a:hover img {
-    opacity: 0.8;
-  }
+.archive-label {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  padding: 5px 9px;
+  font-size: 10px;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  color: var(--ink);
+  background: rgba(250, 249, 246, 0.88);
+  opacity: 0;
+  transform: translateY(6px);
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s ease;
+  pointer-events: none;
+}
+.archive-label em {
+  font-style: normal;
+  color: var(--muted);
+}
+.archive-piece:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 6px;
+}
+.archive-piece:hover,
+.archive-piece:focus-visible {
+  --zoom: 1.05;
+  z-index: 3;
+}
+.archive-piece:hover .archive-label,
+.archive-piece:focus-visible .archive-label {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 /* Project identity stays in the margin; photographs determine the rhythm. */
@@ -416,10 +439,32 @@ html:has(.exhibition-page) {
     width: 100%;
     justify-content: space-between;
   }
-  .image-archive {
-    --thumbnail-height: 180px;
-    padding: 24px 0 48px;
-    gap: 32px;
+  .archive-field {
+    position: static;
+    aspect-ratio: auto;
+    margin: 8px var(--page) 64px;
+    columns: 2;
+    column-gap: 16px;
+  }
+  .archive-piece {
+    position: static;
+    width: auto;
+    transform: none;
+    z-index: auto;
+    margin-bottom: 16px;
+    break-inside: avoid;
+  }
+  .archive-piece:nth-child(3n) {
+    margin-top: 44px;
+  }
+  .archive-piece:nth-child(4n + 1) {
+    margin-top: 20px;
+  }
+  .archive-piece:nth-child(5n) {
+    margin-top: 68px;
+  }
+  .archive-label {
+    display: none;
   }
   :is(.archive-page, .exhibition-page) footer {
     flex-wrap: wrap;
@@ -547,7 +592,11 @@ html:has(.exhibition-page) {
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .archive-image img {
+  .archive-piece {
+    transform: none;
+    transition: none;
+  }
+  .archive-label {
     transition: none;
   }
 }

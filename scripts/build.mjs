@@ -21,6 +21,7 @@ const releaseSources = [
   "src/exhibition.css",
   "src/app.js",
   "src/exhibition.js",
+  "src/home.js",
   "scripts/build.mjs",
   "scripts/deployment.mjs",
   "public/media/manifest.json",
@@ -47,6 +48,7 @@ for (const name of ["style.css", "persona.css", "exhibition.css"]) {
 }
 await cp("src/app.js", `${output}/app.js`);
 await cp("src/exhibition.js", `${output}/exhibition.js`);
+await cp("src/home.js", `${output}/home.js`);
 await writeFile(`${output}/.nojekyll`, "");
 for (const lang of ["es", "en"]) {
   const render = renderer(lang, manifest);

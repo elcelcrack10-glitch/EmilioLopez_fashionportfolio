@@ -268,3 +268,24 @@ accessible page title, row names and image-link labels for assistive technology.
 Rows scroll natively on narrow screens; keyboard focus reaches every image.
 Remove the current process section, navigation and process preview in About until
 Emilio supplies the new folders. Retain original source materials locally.
+
+## Dispersed field — 6 October 2026: scattered home, interactive
+
+Supersedes the aligned project rows above. Re-watched the Webber Represents
+reference and Emilio asked for its scattered field and interaction. Home is now
+one loose composition: the same five approved photographs per project (twenty in
+total), interleaved and placed on an otherwise empty lattice, so they float in
+negative space with no shared row or column. Positions are computed once at
+build time from each photograph's ratio (deterministic and non-overlapping) and
+written as percentages, so the field scales with the viewport.
+
+- Desktop and tablet: an aspect-ratio canvas holds the pieces absolutely; each
+  photograph keeps its full aspect ratio and determines its own size.
+- Interaction: hovering or focusing a photograph lifts it above its neighbours
+  and reveals its project name and year; precise pointers drift the field a few
+  pixels against the pointer. Reduced motion disables the drift and the
+  transitions, and every piece stays a real link reachable by keyboard.
+- Mobile (≤700px): the field becomes a two-column flow with staggered offsets;
+  captions stay hidden and the photographs remain the content.
+- Every photograph still opens its matching photo in its project, in both
+  languages. No captions, filters, count or autoplay are reintroduced.

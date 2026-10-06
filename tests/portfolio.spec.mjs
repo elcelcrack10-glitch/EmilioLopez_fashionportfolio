@@ -6,10 +6,11 @@ test("archive groups five photos per project and preserves image links across la
   page,
 }) => {
   await page.goto("/");
-  await expect(page.locator(".archive-image")).toHaveCount(20);
+  await expect(page.locator(".archive-piece")).toHaveCount(20);
+  await expect(page.locator(".archive-field")).toHaveCount(1);
   for (const project of projects) {
     const images = page.locator(
-      `.archive-row[data-project="${project.slug}"] img`,
+      `.archive-piece[data-project="${project.slug}"] img`,
     );
     await expect(images).toHaveCount(5);
     expect(
@@ -20,7 +21,6 @@ test("archive groups five photos per project and preserves image links across la
       ).size,
     ).toBe(5);
   }
-  await expect(page.locator(".archive-row")).toHaveCount(4);
   await expect(
     page.locator(".image-archive figcaption, .archive-filters"),
   ).toHaveCount(0);
@@ -40,6 +40,45 @@ test("archive groups five photos per project and preserves image links across la
     "src",
     /colores-photo-2-/,
   );
+});
+
+test("the dispersed home reacts to the pointer and keyboard", async ({
+  page,
+}) => {
+  await page.goto("/");
+  const piece = page.locator(".archive-piece").first();
+  await piece.hover();
+  await expect
+    .poll(() =>
+      piece
+        .locator(".archive-label")
+        .evaluate((el) => getComputedStyle(el).opacity),
+    )
+    .toBe("1");
+  await page.mouse.move(1200, 800);
+  await expect
+    .poll(() =>
+      page
+        .locator(".archive-piece")
+        .nth(1)
+        .evaluate((el) => el.style.getPropertyValue("--px")),
+    )
+    .not.toBe("");
+  await piece.focus();
+  await expect(piece).toBeFocused();
+});
+
+test("reduced motion keeps the dispersed home still", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.goto("/");
+  await page.mouse.move(1200, 800);
+  await page.waitForTimeout(200);
+  expect(
+    await page
+      .locator(".archive-piece")
+      .nth(1)
+      .evaluate((el) => el.style.getPropertyValue("--px")),
+  ).toBe("");
 });
 
 test("horizontal reading works with buttons, keyboard, wheel and direct photo links", async ({
@@ -169,7 +208,7 @@ test("lateral concept and credits stay accessible across languages", async ({
     page.locator('[data-rail-link][href="#concepto"]'),
   ).toHaveAttribute("aria-current", "location");
   await page.getByRole("link", { name: "Index", exact: true }).click();
-  await expect(page.locator(".archive-image")).toHaveCount(20);
+  await expect(page.locator(".archive-piece")).toHaveCount(20);
 });
 
 test("contact, CV and film work without automatic video downloads", async ({
@@ -283,24 +322,20 @@ for (const width of [320, 768, 1024, 1440]) {
       ).toBeLessThanOrEqual(width);
     }
     await page.goto("/");
-    for (const row of await page.locator(".archive-row").all()) {
-      const boxes = await row.locator("img").evaluateAll((nodes) =>
-        nodes.map((node) => {
-          const { top, height } = node.getBoundingClientRect();
-          return { top, height };
-        }),
-      );
-      for (const box of boxes) {
-        expect(Math.abs(box.top - boxes[0].top)).toBeLessThan(1);
-        expect(Math.abs(box.height - boxes[0].height)).toBeLessThan(1);
-      }
+    await expect(page.locator(".archive-piece")).toHaveCount(20);
+    const boxes = await page.locator(".archive-piece").evaluateAll((nodes) =>
+      nodes.map((node) => {
+        const { left, top, width, height } = node.getBoundingClientRect();
+        return { left, top, width, height };
+      }),
+    );
+    for (const box of boxes) {
+      expect(box.width).toBeGreaterThan(0);
+      expect(box.height).toBeGreaterThan(0);
+      expect(box.left).toBeGreaterThanOrEqual(0);
     }
     if (width === 320) {
-      const lastPhoto = page
-        .locator(".archive-row")
-        .first()
-        .getByRole("link")
-        .last();
+      const lastPhoto = page.locator(".archive-piece").last();
       await lastPhoto.focus();
       await expect(lastPhoto).toBeInViewport();
     }
