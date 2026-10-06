@@ -333,3 +333,5 @@ Follow-up on the Webber-style project rail.
 - The concept panel drops the lead headline; only the small `Concepto` label
   stays, now in the typewriter face.
 - Next project becomes a plain underlined text link, without the arrow.
+- The sideways cue under the margin is removed; the counter stays pinned to
+  the foot of the margin.

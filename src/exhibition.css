@@ -220,13 +220,6 @@ html:has(.exhibition-page) {
   text-decoration: underline;
   text-underline-offset: 5px;
 }
-.rail-instruction {
-  margin-top: auto;
-  padding-top: 32px;
-  font-size: 10px;
-  color: var(--muted);
-  line-height: 1.5;
-}
 .rail-controls {
   display: none;
 }
@@ -235,7 +228,7 @@ html:has(.exhibition-page) {
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  margin-top: 12px;
+  margin-top: auto;
 }
 .rail-controls button {
   font-size: 22px;
@@ -527,12 +520,6 @@ html:has(.exhibition-page) {
   }
   .rail-navigation a {
     font-size: 11px;
-  }
-  .rail-instruction {
-    grid-column: 1;
-    grid-row: 3;
-    padding: 0;
-    margin: auto 0;
   }
   .js .rail-controls {
     grid-column: 2;
