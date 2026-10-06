@@ -18,7 +18,7 @@ Abrir **http://localhost:4173**. `npm run preview` sirve la versión ya generada
 - `src/style.css`: diseño y adaptación a pantallas.
 - `src/app.js`: cambio de idioma y visor de fotografías.
 - `src/persona.css`: diseño de la página Persona.
-- `src/exhibition.css` y `src/exhibition.js`: índice de fotografías, filtros y recorridos horizontales.
+- `src/exhibition.css` y `src/exhibition.js`: filas de fotografías por proyecto y recorridos horizontales.
 - `review/`: decisiones editoriales y verificaciones locales, excluidas del repositorio público.
 
 Después de cambiar textos o estilos, ejecutar `npm run build` y recargar el navegador.

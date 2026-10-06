@@ -2,14 +2,14 @@ import { test, expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 import { projects } from "../src/content.mjs";
 
-test("archive has five distinct photos per project and preserves filters across languages", async ({
+test("archive groups five photos per project and preserves image links across languages", async ({
   page,
 }) => {
   await page.goto("/");
   await expect(page.locator(".archive-image")).toHaveCount(20);
   for (const project of projects) {
     const images = page.locator(
-      `.archive-image[data-project="${project.slug}"] img`,
+      `.archive-row[data-project="${project.slug}"] img`,
     );
     await expect(images).toHaveCount(5);
     expect(
@@ -20,11 +20,12 @@ test("archive has five distinct photos per project and preserves filters across 
       ).size,
     ).toBe(5);
   }
-  await page.getByRole("button", { name: "COLORES", exact: true }).click();
-  await expect(page.locator(".archive-image:visible")).toHaveCount(5);
+  await expect(page.locator(".archive-row")).toHaveCount(4);
+  await expect(
+    page.locator(".image-archive figcaption, .archive-filters"),
+  ).toHaveCount(0);
   await page.getByRole("link", { name: "EN", exact: true }).click();
-  await expect(page).toHaveURL(/\/en\/\?project=colores/);
-  await expect(page.locator(".archive-image:visible")).toHaveCount(5);
+  await expect(page).toHaveURL(/\/en\//);
   await page
     .getByRole("link", { name: "View COLORES — image 3", exact: true })
     .click();
@@ -51,7 +52,7 @@ test("horizontal reading works with buttons, keyboard, wheel and direct photo li
   await expect(page.locator("[data-rail-prev]")).toBeDisabled();
   await page.locator("[data-rail-next]").click();
   await expect.poll(left).toBeGreaterThan(100);
-  await expect(page.locator(".rail-counter")).toHaveText("02 / 29");
+  await expect(page.locator(".rail-counter")).toHaveText("02 / 10");
   await track.focus();
   await page.keyboard.press("Home");
   await expect.poll(left).toBe(0);
@@ -60,7 +61,7 @@ test("horizontal reading works with buttons, keyboard, wheel and direct photo li
   await page.keyboard.press("End");
   await expect(page.locator("[data-rail-next]")).toBeDisabled();
   await expect(page.locator("#siguiente")).toBeInViewport();
-  await expect(page.locator(".rail-counter")).toHaveText("29 / 29");
+  await expect(page.locator(".rail-counter")).toHaveText("10 / 10");
   await page.keyboard.press("Home");
   await expect.poll(left).toBe(0);
   const bounds = await track.boundingBox();
@@ -130,9 +131,7 @@ test("mobile visitors can swipe the gallery and scroll expanded notes", async ({
   }
 });
 
-test("gallery supports keyboard, focus return and ordered process", async ({
-  page,
-}) => {
+test("gallery supports keyboard and focus return", async ({ page }) => {
   await page.goto("/pescadilla/");
   const cover = page.locator("#editorial [data-gallery]").first();
   await cover.focus();
@@ -147,19 +146,9 @@ test("gallery supports keyboard, focus return and ordered process", async ({
   await page.keyboard.press("Escape");
   await expect(page.getByRole("dialog")).not.toBeVisible();
   await expect(cover).toBeFocused();
-  const process = page.locator(".rail-process").last().locator("img");
-  await expect(process).toHaveCount(11);
-  await expect(process.first()).toHaveAttribute(
-    "alt",
-    "Toile de la chaqueta, vista lateral",
-  );
-  await expect(process.last()).toHaveAttribute(
-    "alt",
-    "Prueba de la chaqueta con la capucha bajada",
-  );
 });
 
-test("lateral concept, credits and process stay accessible across languages", async ({
+test("lateral concept and credits stay accessible across languages", async ({
   page,
 }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
@@ -173,13 +162,11 @@ test("lateral concept, credits and process stay accessible across languages", as
   await page.locator("#concepto summary").click();
   await expect(page.locator("#concepto details")).toHaveAttribute("open", "");
   await expect(page.locator("#concepto .credits")).toContainText("Luda Pellat");
-  await nav.getByRole("link", { name: "Proceso", exact: true }).click();
-  await expect(page.locator("#proceso-1")).toBeInViewport();
   await page.getByRole("link", { name: "EN", exact: true }).click();
-  await expect(page).toHaveURL(/\/en\/feel-marni\/#proceso/);
-  await expect(page.locator("#proceso-1")).toBeInViewport();
+  await expect(page).toHaveURL(/\/en\/feel-marni\/#concepto/);
+  await expect(page.locator("#concepto")).toBeInViewport();
   await expect(
-    page.locator('[data-rail-link][href="#proceso"]'),
+    page.locator('[data-rail-link][href="#concepto"]'),
   ).toHaveAttribute("aria-current", "location");
   await page.getByRole("link", { name: "Index", exact: true }).click();
   await expect(page.locator(".archive-image")).toHaveCount(20);
@@ -247,6 +234,13 @@ for (const lang of ["es", "en"]) {
       const response = await page.goto(url);
       expect(response.status()).toBe(200);
       await expect(page.locator("h1")).toHaveCount(1);
+      await expect(
+        page.locator('#proceso, [href$="#proceso"], .persona-studio'),
+      ).toHaveCount(0);
+      if (projects.some((project) => project.slug === slug)) {
+        await expect(page.locator("main img")).toHaveCount(8);
+        await expect(page.locator('[data-gallery^="process-"]')).toHaveCount(0);
+      }
       const results = await new AxeBuilder({ page })
         .withTags(["wcag2a", "wcag2aa", "wcag21aa"])
         .analyze();
@@ -288,7 +282,28 @@ for (const width of [320, 768, 1024, 1440]) {
         await page.evaluate(() => document.documentElement.scrollWidth),
       ).toBeLessThanOrEqual(width);
     }
-    await page.goto("/?view=index");
+    await page.goto("/");
+    for (const row of await page.locator(".archive-row").all()) {
+      const boxes = await row.locator("img").evaluateAll((nodes) =>
+        nodes.map((node) => {
+          const { top, height } = node.getBoundingClientRect();
+          return { top, height };
+        }),
+      );
+      for (const box of boxes) {
+        expect(Math.abs(box.top - boxes[0].top)).toBeLessThan(1);
+        expect(Math.abs(box.height - boxes[0].height)).toBeLessThan(1);
+      }
+    }
+    if (width === 320) {
+      const lastPhoto = page
+        .locator(".archive-row")
+        .first()
+        .getByRole("link")
+        .last();
+      await lastPhoto.focus();
+      await expect(lastPhoto).toBeInViewport();
+    }
     expect(
       await page.evaluate(() => document.documentElement.scrollWidth),
     ).toBeLessThanOrEqual(width);
@@ -311,7 +326,7 @@ test("core content and navigation work without JavaScript", async ({
     .getByRole("link", { name: "Ver Manuela — imagen 1", exact: true })
     .click();
   await expect(page.locator("h1")).toHaveText("Manuela");
-  await expect(page.locator("#proceso")).toBeVisible();
+  await expect(page.locator("#editorial img")).toHaveCount(8);
   await context.close();
 });
 

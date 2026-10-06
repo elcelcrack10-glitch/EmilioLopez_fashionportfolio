@@ -257,3 +257,14 @@ photographs, Sans typography, wording and project identities.
   languages. Keep native film controls and the full-resolution image viewer.
 - Progressive enhancement: real links, visible horizontal scrollbar, all images
   and texts remain reachable without JavaScript. About/CV content stays intact.
+
+## Refinement — 6 October 2026: aligned project rows
+
+Replaces the interleaved archive above. Home now has four horizontal rows, one per
+project, with five photographs each. All photos in a row share their height and
+top/bottom alignment while retaining their full aspect ratio. Remove the visible
+archive heading, project filters, count and all thumbnail captions. Retain an
+accessible page title, row names and image-link labels for assistive technology.
+Rows scroll natively on narrow screens; keyboard focus reaches every image.
+Remove the current process section, navigation and process preview in About until
+Emilio supplies the new folders. Retain original source materials locally.

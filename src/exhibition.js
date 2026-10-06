@@ -1,38 +1,3 @@
-// Home filtering uses real thumbnails, with the selection carried in the URL.
-const filters = [...document.querySelectorAll("[data-filter]")];
-const thumbnails = [...document.querySelectorAll(".archive-image")];
-function filterArchive() {
-  const requested = new URL(location.href).searchParams.get("project");
-  const selected = filters.some((button) => button.dataset.filter === requested)
-    ? requested
-    : "all";
-  thumbnails.forEach((item) => {
-    item.hidden = selected !== "all" && item.dataset.project !== selected;
-  });
-  filters.forEach((button) =>
-    button.setAttribute(
-      "aria-pressed",
-      String(button.dataset.filter === selected),
-    ),
-  );
-  const count = document.querySelector(".archive-count");
-  if (count)
-    count.textContent = `${thumbnails.filter((item) => !item.hidden).length} / ${thumbnails.length}`;
-}
-filters.forEach((button) =>
-  button.addEventListener("click", () => {
-    const url = new URL(location.href);
-    if (button.dataset.filter === "all") url.searchParams.delete("project");
-    else url.searchParams.set("project", button.dataset.filter);
-    history.replaceState(null, "", url);
-    filterArchive();
-  }),
-);
-if (filters.length) {
-  filterArchive();
-  window.addEventListener("popstate", filterArchive);
-}
-
 const track = document.querySelector(".exhibition-track");
 if (track) initExhibition(track);
 

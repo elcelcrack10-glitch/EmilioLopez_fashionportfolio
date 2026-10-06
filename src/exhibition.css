@@ -60,115 +60,46 @@ html:has(.exhibition-page) {
   display: none;
 }
 
-/* The twenty pictures form a loose contact sheet, without card surfaces. */
-.archive-toolbar {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 24px;
-  padding: 12px var(--page) 24px;
-}
-.archive-toolbar h1 {
-  font-size: 11px;
-  font-weight: 400;
-  color: var(--muted);
-  letter-spacing: 0;
-  flex-shrink: 0;
-}
-.archive-filters {
-  display: none;
-}
-.js .archive-filters {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px 24px;
-}
-.archive-filters button {
-  font-size: 12px;
-  min-height: 44px;
-  padding: 0;
-  color: var(--muted);
-}
-.archive-filters button[aria-pressed="true"] {
-  color: var(--ink);
-  text-decoration: underline;
-  text-underline-offset: 5px;
-}
-.archive-filters button span {
-  font-size: 10px;
-}
-.archive-count {
-  font-size: 10px;
-  color: var(--muted);
-  font-variant-numeric: tabular-nums;
-}
-.archive-grid {
+/* Each project is one aligned row of uncropped photographs. */
+.image-archive {
+  --thumbnail-height: clamp(140px, 16vw, 220px);
+  padding: 48px 0 72px;
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  grid-auto-rows: 250px;
-  gap: 24px 4vw;
-  padding: 24px var(--page) 80px;
-  align-items: center;
+  gap: 64px;
+}
+.archive-row {
+  display: flex;
+  align-items: flex-start;
+  gap: clamp(16px, 2.2vw, 32px);
+  padding: 8px var(--page) 16px;
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  scroll-padding-inline: var(--page);
+  scrollbar-width: thin;
+  scrollbar-color: var(--line) transparent;
 }
 .archive-image {
-  width: 78%;
-  justify-self: start;
-}
-.archive-image:nth-child(5n + 2) {
-  justify-self: end;
-  align-self: end;
-  width: 88%;
-}
-.archive-image:nth-child(5n + 3) {
-  justify-self: center;
-  align-self: start;
-  width: 100%;
-}
-.archive-image:nth-child(5n + 4) {
-  justify-self: end;
-  width: 66%;
-}
-.archive-image:nth-child(5n) {
-  align-self: start;
-  width: 86%;
-}
-.archive-image[hidden] {
-  display: none;
+  flex: none;
+  width: calc(var(--thumbnail-height) * var(--image-ratio));
+  scroll-snap-align: start;
 }
 .archive-image a,
 .archive-image picture {
   display: block;
+  height: var(--thumbnail-height);
 }
 .archive-image img {
   display: block;
   width: 100%;
-  height: auto;
-  max-height: 200px;
+  height: 100%;
   object-fit: contain;
   background: transparent;
   outline: none;
   transition: opacity 0.15s ease;
 }
-.archive-image figcaption {
-  display: flex;
-  justify-content: space-between;
-  gap: 8px;
-  font-size: 10px;
-  line-height: 1.4;
-  margin-top: 10px;
-}
-.archive-image figcaption > span:last-child {
-  color: var(--muted);
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
-}
 @media (hover: hover) {
   .archive-image a:hover img {
     opacity: 0.8;
-  }
-  .archive-image:has(a:hover) figcaption > span:first-child {
-    text-decoration: underline;
-    text-underline-offset: 3px;
   }
 }
 
@@ -316,16 +247,12 @@ html:has(.exhibition-page) {
   outline: 1px solid var(--muted);
   outline-offset: -2px;
 }
-.rail-chapter,
-.rail-process {
+.rail-chapter {
   display: flex;
   flex: none;
   align-items: center;
   gap: 32px;
   height: 100%;
-}
-.rail-chapter > .rail-process + .rail-process {
-  margin-left: 48px;
 }
 [data-rail-panel] {
   scroll-snap-align: start;
@@ -382,10 +309,6 @@ html:has(.exhibition-page) {
   color: #292925;
   background: #faf9f6;
   font-size: 20px;
-}
-.rail-image.rail-study {
-  height: 84%;
-  width: min(calc(var(--image-ratio) * 54svh), 70vw);
 }
 .rail-note {
   width: 320px;
@@ -470,21 +393,6 @@ html:has(.exhibition-page) {
 }
 
 @media (max-width: 1100px) {
-  .archive-grid {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    grid-auto-rows: 220px;
-  }
-  .archive-toolbar {
-    flex-wrap: wrap;
-    gap: 8px 24px;
-  }
-  .archive-filters {
-    order: 1;
-    width: 100%;
-  }
-  .archive-image img {
-    max-height: 172px;
-  }
   .exhibition-page {
     --margin-width: 204px;
   }
@@ -508,33 +416,10 @@ html:has(.exhibition-page) {
     width: 100%;
     justify-content: space-between;
   }
-  .archive-toolbar {
-    padding-bottom: 8px;
-  }
-  .archive-filters {
-    column-gap: 18px;
-  }
-  .archive-filters button {
-    font-size: 11px;
-  }
-  .archive-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    grid-auto-rows: 196px;
-    gap: 24px 28px;
-    padding: 24px var(--page) 56px;
-  }
-  .archive-image {
-    width: 90%;
-  }
-  .archive-image:nth-child(5n + 4) {
-    width: 84%;
-  }
-  .archive-image img {
-    max-height: 154px;
-  }
-  .archive-image figcaption {
-    font-size: 9px;
-    gap: 4px;
+  .image-archive {
+    --thumbnail-height: 180px;
+    padding: 24px 0 48px;
+    gap: 32px;
   }
   :is(.archive-page, .exhibition-page) footer {
     flex-wrap: wrap;
@@ -620,20 +505,12 @@ html:has(.exhibition-page) {
     gap: 32px;
     scroll-padding-left: var(--page);
   }
-  .rail-chapter,
-  .rail-process {
+  .rail-chapter {
     gap: 20px;
-  }
-  .rail-chapter > .rail-process + .rail-process {
-    margin-left: 12px;
   }
   .rail-image {
     width: 82vw;
     height: 100%;
-  }
-  .rail-image.rail-study {
-    width: 82vw;
-    height: 94%;
   }
   .rail-image figcaption {
     font-size: 9px;
@@ -667,9 +544,6 @@ html:has(.exhibition-page) {
       calc(var(--image-ratio) * 460px),
       calc(100vw - var(--margin-width) - 64px)
     );
-  }
-  .rail-image.rail-study {
-    width: min(calc(var(--image-ratio) * 380px), 70vw);
   }
 }
 @media (prefers-reduced-motion: reduce) {
