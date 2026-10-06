@@ -309,3 +309,9 @@ holds no project images.
 - Content, both languages, the CV download, the contact links and the biography
   remain intact. No new font, script or image. The closing wordmark stays as a
   quiet grey signature, darkened just enough to meet contrast.
+
+Follow-up: the introduction block and the scroll cue were removed, so the
+contact link in the black block is the only call to action. Headings, labels
+and body copy now use Hanken Grotesk — the reference's own typeface, fetched
+from Google Fonts and self-hosted like Albert Sans (OFL) — while the monumental
+name stays in Albert Sans.

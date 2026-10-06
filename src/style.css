@@ -993,19 +993,6 @@ html:has(.project-page) {
 .next-project .next-project-index {
   margin-top: 16px;
 }
-.about-heading {
-  padding: 60px var(--page) 80px;
-}
-.about-heading h1 {
-  font-size: clamp(62px, 9vw, 150px);
-  letter-spacing: -0.045em;
-  line-height: 1.05;
-  margin-top: 40px;
-}
-.about-heading h1::first-line {
-  font-family: var(--font-sans);
-  font-weight: 300;
-}
 .biography {
   display: grid;
   grid-template-columns: 1fr 2fr;
@@ -1594,14 +1581,6 @@ footer a:focus-visible {
   }
   .next-project img {
     height: 140px;
-  }
-  .about-heading {
-    padding-top: 36px;
-    padding-bottom: 48px;
-  }
-  .about-heading h1 {
-    font-size: 14vw;
-    margin-top: 24px;
   }
   .biography {
     grid-template-columns: 1fr;
