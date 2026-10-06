@@ -3,7 +3,9 @@ document.documentElement.classList.add("js");
 document.querySelectorAll(".languages a").forEach((link) =>
   link.addEventListener("click", () => {
     const url = new URL(link.href);
+    const revision = url.searchParams.get("v");
     url.search = location.search;
+    if (revision) url.searchParams.set("v", revision);
     url.hash = location.hash;
     link.href = url.href;
   }),

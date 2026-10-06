@@ -47,7 +47,7 @@ test("project-site build resolves pages, images, fonts, film, CV and metadata un
       /property="og:image" content="https:\/\/example.github.io\/post-folio\/media\//,
     );
     assert.match(marni, /src="\/post-folio\/media\/feel-marni.mp4"/);
-    assert.match(marni, /href="\/post-folio\/en\/feel-marni\/"/);
+    assert.match(marni, /href="\/post-folio\/en\/feel-marni\/\?v=[a-f0-9]+"/);
     for (const [, path] of (
       await readFile(join(output, "style.css"), "utf8")
     ).matchAll(/url\("([^\"]*)"\)/g))
@@ -57,6 +57,17 @@ test("project-site build resolves pages, images, fonts, film, CV and metadata un
         resource.startsWith("/post-folio/"),
         `Missing base path: ${resource}`,
       );
+      const resourceURL = new URL(resource.replaceAll("&amp;", "&"), site);
+      if (
+        /\.(css|js)$/.test(resourceURL.pathname) ||
+        resourceURL.pathname.endsWith("/")
+      ) {
+        assert.match(
+          resourceURL.searchParams.get("v") || "",
+          /^[a-f0-9]{12}$/,
+          `Unversioned page or stylesheet/script can reuse old cached content: ${resource}`,
+        );
+      }
       const pathname = new URL(resource, site).pathname.slice(
         "/post-folio/".length,
       );

@@ -8,7 +8,26 @@ export function absoluteSiteURL(path) {
   return new URL(path.replace(/^\//, ""), `${siteURL}/`).href;
 }
 
-export function deploymentHTML(html) {
+export function deploymentHTML(html, revision = "") {
+  if (revision) {
+    html = html.replace(/<(a|link|script)\b[^>]*>/g, (tag, element) => {
+      if (element === "link" && !tag.includes('rel="stylesheet"')) return tag;
+      return tag.replace(
+        /\b(href|src)="(\/(?!\/)[^"]*)"/g,
+        (attribute, name, path) => {
+          const url = new URL(
+            path.replaceAll("&amp;", "&"),
+            "https://portfolio.invalid",
+          );
+          const isAsset = /\.(css|js)$/.test(url.pathname);
+          const isPage = element === "a" && url.pathname.endsWith("/");
+          if (!isAsset && !isPage) return attribute;
+          url.searchParams.set("v", revision);
+          return `${name}="${(url.pathname + url.search + url.hash).replaceAll("&", "&amp;")}"`;
+        },
+      );
+    });
+  }
   if (!basePath) return html;
   return html
     .replace(

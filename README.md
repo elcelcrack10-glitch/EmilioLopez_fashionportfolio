@@ -74,3 +74,9 @@ Las carpetas originales, revisiones, capturas, archivos de entorno y paquetes
 locales están excluidos por `.gitignore`. Solo `dist/` se publica en Pages.
 
 La biografía inglesa y los textos de proyecto son una primera redacción editable. Las comprobaciones de navegador documentadas se realizaron en Chrome; Safari y Firefox requieren una revisión específica antes de garantizar compatibilidad con esos navegadores.
+
+Las compilaciones con `SITE_URL` añaden una versión de contenido a los enlaces
+internos y los archivos CSS/JS. Para compartir una actualización inmediatamente,
+usa `?v=VERSION` en la URL inicial (el build imprime `Release: VERSION`). Esto
+impide mezclar una página nueva con estilos o proyectos guardados en caché.
+Las direcciones canónicas para buscadores conservan su formato limpio.
