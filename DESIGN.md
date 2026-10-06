@@ -351,3 +351,10 @@ does for other swatches.
 - The black contact block becomes periwinkle blue with dark ink and a dark
   indigo signature, so it contrasts with the page while its own wordmark stays
   readable. The CV button turns periwinkle.
+
+## Contact arrows — 6 October 2026: a vector arrow
+
+On iPhone the `↗` glyph (U+2197) renders as an emoji. The arrows next to
+`Contacto` and the Instagram handles are now a small inline SVG that inherits
+`currentColor` and scales with the surrounding text, so the mark looks the same
+on every platform.

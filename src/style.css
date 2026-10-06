@@ -179,6 +179,15 @@ main {
 .text-link > span[aria-hidden] {
   font-size: 20px;
 }
+.arrow-out {
+  display: inline-flex;
+  align-items: center;
+}
+.arrow-out svg {
+  display: block;
+  width: 0.72em;
+  height: 0.72em;
+}
 .text-link:hover {
   color: var(--muted);
 }

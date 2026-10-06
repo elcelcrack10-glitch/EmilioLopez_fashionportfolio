@@ -11,7 +11,9 @@ export const escape = (value) =>
   );
 export const pathFor = (slug, lang) =>
   `${lang === "en" ? "/en" : ""}/${slug ? `${slug}/` : ""}`;
-const arrow = '<span aria-hidden="true">↗</span>';
+// A vector arrow: the ↗ glyph renders as an emoji on iOS.
+const arrow =
+  '<span class="arrow-out" aria-hidden="true"><svg viewBox="0 0 12 12" focusable="false"><path d="M3.4 8.6 8.6 3.4M4 3.4h4.6V8" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="square"/></svg></span>';
 const number = (i) => String(i + 1).padStart(2, "0");
 // Gmail's compose window: a mailto: would open whatever mail client the visitor
 // has installed (Apple Mail on macOS) instead of a web inbox.
