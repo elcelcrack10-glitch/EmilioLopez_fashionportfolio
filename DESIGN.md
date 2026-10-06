@@ -335,3 +335,19 @@ Follow-up on the Webber-style project rail.
 - Next project becomes a plain underlined text link, without the arrow.
 - The sideways cue under the margin is removed; the counter stays pinned to
   the foot of the margin.
+
+## About palette — 6 October 2026: periwinkle, butter and khaki
+
+Emilio supplied a three-colour palette for About: periwinkle blue, butter
+yellow and khaki. The palette image did not reach disk, so the values are
+visual approximations (`#8c96ef`, `#f6efb3`, `#c2bb99`), as the project already
+does for other swatches.
+
+- The page canvas is butter yellow; rules turn a muted khaki-gold.
+- The name sits on a deeper periwinkle block: `EMILIO` reads in butter yellow
+  and `LOPEZ` in khaki, so the title carries all three colours. The block is
+  deepened to `#4a54c8` because periwinkle, butter and khaki do not reach 3:1
+  against one another, and a huge name still counts as text for WCAG.
+- The black contact block becomes periwinkle blue with dark ink and a dark
+  indigo signature, so it contrasts with the page while its own wordmark stays
+  readable. The CV button turns periwinkle.
