@@ -13,6 +13,9 @@ export const pathFor = (slug, lang) =>
   `${lang === "en" ? "/en" : ""}/${slug ? `${slug}/` : ""}`;
 const arrow = '<span aria-hidden="true">↗</span>';
 const number = (i) => String(i + 1).padStart(2, "0");
+// Gmail's compose window: a mailto: would open whatever mail client the visitor
+// has installed (Apple Mail on macOS) instead of a web inbox.
+const mailURL = `https://mail.google.com/mail/?view=cm&fs=1&to=${contact.email}`;
 // A dispersed field: every photograph owns an empty cell of a loose lattice and
 // is jittered inside it, so the composition reads as scattered yet never
 // overlaps. Everything is a percentage, so the field scales with the viewport.
@@ -82,7 +85,7 @@ export function renderer(lang, manifest) {
       )
       .join("");
   const footer = (isAbout = false) =>
-    `<footer id="contacto"><div class="footer-top"><p class="eyebrow">${words("¿Hablamos?", "Let’s talk")}</p><a class="contact-heading" href="mailto:${contact.email}">${words("Contacto", "Contact")} ${arrow}</a></div><div class="footer-bottom"><a href="mailto:${contact.email}">${contact.email}</a><div class="socials">${socials()}</div><span>© ${new Date().getFullYear()} Emilio Lopez</span><a href="#top">${words("Volver arriba", "Back to top")} ↑</a></div>${isAbout ? '<p class="persona-signature" aria-hidden="true">EMILIO LOPEZ</p>' : ""}</footer>`;
+    `<footer id="contacto"><div class="footer-top"><p class="eyebrow">${words("¿Hablamos?", "Let’s talk")}</p><a class="contact-heading" href="${escape(mailURL)}" target="_blank" rel="noopener noreferrer">${words("Contacto", "Contact")} ${arrow}<span class="sr-only">${words(" (nueva pestaña)", " (new tab)")}</span></a></div><div class="footer-bottom"><a href="${escape(mailURL)}" target="_blank" rel="noopener noreferrer">${contact.email}<span class="sr-only">${words(" (nueva pestaña)", " (new tab)")}</span></a><div class="socials">${socials()}</div><span>© ${new Date().getFullYear()} Emilio Lopez</span><a href="#top">${words("Volver arriba", "Back to top")} ↑</a></div>${isAbout ? '<p class="persona-signature" aria-hidden="true">EMILIO LOPEZ</p>' : ""}</footer>`;
   function shell(slug, title, description, content, cover) {
     const isAbout = slug === "sobre-mi";
     const isProject = projects.some((project) => project.slug === slug);

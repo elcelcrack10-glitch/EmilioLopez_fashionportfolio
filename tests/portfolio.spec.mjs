@@ -256,8 +256,11 @@ test("contact, CV and film work without automatic video downloads", async ({
   const download = await downloadEvent;
   expect(download.suggestedFilename()).toBe("Emilio-Lopez-CV.pdf");
   await expect(
-    page.locator('footer a[href="mailto:e.lopezcastillejos@ied.edu"]').first(),
-  ).toBeVisible();
+    page.locator("footer a[href*='mail.google.com']").first(),
+  ).toHaveAttribute(
+    "href",
+    "https://mail.google.com/mail/?view=cm&fs=1&to=e.lopezcastillejos@ied.edu",
+  );
   for (const name of ["ocaassaa", "emiliolpc_"])
     await expect(
       page.locator(`a[href="https://www.instagram.com/${name}/"]`),

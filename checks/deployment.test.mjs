@@ -32,7 +32,11 @@ test("project-site build resolves pages, images, fonts, film, CV and metadata un
         for (const candidate of candidates.split(","))
           resources.add(candidate.trim().split(/\s/)[0]);
       }
-      assert.ok(html.includes('href="mailto:e.lopezcastillejos@ied.edu"'));
+      assert.ok(
+        html.includes(
+          'href="https://mail.google.com/mail/?view=cm&amp;fs=1&amp;to=e.lopezcastillejos@ied.edu"',
+        ),
+      );
       assert.ok(html.includes('href="#main"'));
       if (file !== "404.html")
         assert.ok(

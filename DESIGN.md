@@ -315,3 +315,7 @@ contact link in the black block is the only call to action. Headings, labels
 and body copy now use Hanken Grotesk — the reference's own typeface, fetched
 from Google Fonts and self-hosted like Albert Sans (OFL) — while the monumental
 name stays in Albert Sans.
+
+Contact links in the footer (the `Contacto` heading and the address) now open
+Gmail's compose window to the portfolio address in a new tab, instead of a
+`mailto:` that would launch the visitor's own mail client — Apple Mail on a Mac.
