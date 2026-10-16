@@ -20,7 +20,7 @@ export function deploymentHTML(html, revision = "") {
             "https://portfolio.invalid",
           );
           const isAsset = /\.(css|js)$/.test(url.pathname);
-          const isPage = element === "a" && url.pathname.endsWith("/");
+          const isPage = Boolean(siteURL) && element === "a" && url.pathname.endsWith("/");
           if (!isAsset && !isPage) return attribute;
           url.searchParams.set("v", revision);
           return `${name}="${(url.pathname + url.search + url.hash).replaceAll("&", "&amp;")}"`;

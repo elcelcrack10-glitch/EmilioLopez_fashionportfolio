@@ -1,0 +1,56 @@
+[
+  {
+    "src": "/media/home-cover-001.webp",
+    "width": 1920,
+    "height": 1357,
+    "alt": {
+      "es": "Collage de arquitectura, moda y tipografía roja con la palabra Stamina.",
+      "en": "Collage of architecture, fashion and red typography with the word Stamina."
+    }
+  },
+  {
+    "src": "/media/home-cover-007.webp",
+    "width": 1920,
+    "height": 1280,
+    "alt": {
+      "es": "Pescados en una caja azul con un cartel de pescadilla.",
+      "en": "Fish in a blue crate with a hake price sign."
+    }
+  },
+  {
+    "src": "/media/home-cover-002.webp",
+    "width": 1920,
+    "height": 1357,
+    "alt": {
+      "es": "Collage de prendas y texturas con el texto Feel Marni y Eco-Marni.",
+      "en": "Collage of garments and textures with Feel Marni and Eco-Marni text."
+    }
+  },
+  {
+    "src": "/media/home-cover-005.webp",
+    "width": 1919,
+    "height": 1357,
+    "alt": {
+      "es": "Collage de fotografías en franjas de colores junto a una forma roja de pétalos.",
+      "en": "Photo collage in colored bands beside a red petal shape."
+    }
+  },
+  {
+    "src": "/media/home-cover-008.webp",
+    "width": 1920,
+    "height": 1280,
+    "alt": {
+      "es": "Primer plano de las cabezas de cuatro pescados rojos.",
+      "en": "Close-up of the heads of four red fish."
+    }
+  },
+  {
+    "src": "/media/home-cover-006.webp",
+    "width": 1919,
+    "height": 1357,
+    "alt": {
+      "es": "Trazos de colores junto a un diseño de letras manuscritas sobre fondo gris.",
+      "en": "Colored strokes beside a handwritten lettering design on a gray background."
+    }
+  }
+]

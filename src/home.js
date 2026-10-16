@@ -1,5 +1,75 @@
 // The scattered field drifts a few pixels against the pointer on precise
 // devices. Photographs stay reachable and static when that is not appropriate.
+const slideshow = document.querySelector(".home-slideshow");
+if (slideshow) initSlideshow(slideshow);
+
+function initSlideshow(root) {
+  const track = root.querySelector(".home-slides");
+  const slides = [...track.children];
+  const repeats = slides.map((slide) => {
+    const copy = slide.cloneNode(true);
+    copy.dataset.repeat = "";
+    copy.inert = true;
+    copy.setAttribute("aria-hidden", "true");
+    track.append(copy);
+    return copy;
+  });
+  let resetTimer;
+  const resetLoop = () => {
+    if (index < slides.length) return;
+    clearTimeout(resetTimer);
+    index = 0;
+    track.style.transition = "none";
+    track.style.transform = "translateX(0)";
+    // Both positions show the same image; reset without animating backwards.
+    track.getBoundingClientRect();
+    track.style.transition = "";
+    updateSlides();
+  };
+  const updateSlides = () => {
+    [...slides, ...repeats].forEach((slide, i) => {
+      slide.inert = i !== index;
+      slide.setAttribute("aria-hidden", String(i !== index));
+      if (i === index || i === index + 1) {
+        slide.querySelector("img").loading = "eager";
+      }
+    });
+  };
+
+  const reduced = matchMedia("(prefers-reduced-motion: reduce)");
+  let index = 0;
+
+  let visible = true;
+  let timer;
+
+  const schedule = () => {
+    clearTimeout(timer);
+    if (reduced.matches || !visible || document.hidden) return;
+    timer = setTimeout(() => show(index + 1), 4500);
+  };
+  const show = (next) => {
+    index = next;
+    track.style.transform = `translateX(-${index * 100}%)`;
+    updateSlides();
+    if (index === slides.length) {
+      resetTimer = setTimeout(resetLoop, 850);
+    }
+
+    schedule();
+  };
+
+  track.addEventListener("transitionend", (event) => {
+    if (event.target === track && event.propertyName === "transform") resetLoop();
+  });
+  document.addEventListener("visibilitychange", schedule);
+  reduced.addEventListener("change", schedule);
+  new IntersectionObserver(([entry]) => {
+    visible = entry.isIntersecting;
+    schedule();
+  }).observe(root);
+  show(0);
+}
+
 const field = document.querySelector(".archive-field");
 if (field) initField(field);
 

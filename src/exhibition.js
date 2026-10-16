@@ -1,3 +1,4 @@
+// The reading room is vertical: one panel per screen, top to bottom.
 const track = document.querySelector(".exhibition-track");
 if (track) initExhibition(track);
 
@@ -8,40 +9,34 @@ function initExhibition(track) {
   const previous = document.querySelector("[data-rail-prev]");
   const next = document.querySelector("[data-rail-next]");
   const count = document.querySelector(".rail-counter");
+  const lightbox = document.querySelector(".lightbox");
   const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
   let current = 0;
-  let settle;
   let frame;
+  let settle;
 
-  function destination(element) {
-    const padding = parseFloat(getComputedStyle(track).paddingLeft) || 0;
-    return (
-      element.getBoundingClientRect().left -
-      track.getBoundingClientRect().left +
-      track.scrollLeft -
-      padding
-    );
-  }
+  const topOf = (element) => element.getBoundingClientRect().top + scrollY;
+  const clamp = (value) => Math.max(0, Math.min(panels.length - 1, value));
+
   function setFragment(id) {
     const url = new URL(location.href);
     url.hash = id;
     history.replaceState(null, "", url);
   }
   function updatePosition(saveFragment = false) {
+    const atEnd =
+      scrollY + innerHeight >= document.documentElement.scrollHeight - 2;
     current = panels.reduce(
       (best, panel, i) =>
-        Math.abs(destination(panel) - track.scrollLeft) <
-        Math.abs(destination(panels[best]) - track.scrollLeft)
+        Math.abs(topOf(panel) - scrollY) < Math.abs(topOf(panels[best]) - scrollY)
           ? i
           : best,
       0,
     );
-    if (track.scrollLeft >= track.scrollWidth - track.clientWidth - 2)
-      current = panels.length - 1;
+    if (atEnd) current = panels.length - 1;
     count.textContent = `${String(current + 1).padStart(2, "0")} / ${String(panels.length).padStart(2, "0")}`;
-    previous.disabled = track.scrollLeft < 2;
-    next.disabled =
-      track.scrollLeft >= track.scrollWidth - track.clientWidth - 2;
+    previous.disabled = current === 0;
+    next.disabled = current === panels.length - 1;
     const active = chapters.find(
       (chapter) =>
         chapter === panels[current] || chapter.contains(panels[current]),
@@ -55,19 +50,21 @@ function initExhibition(track) {
     frame = null;
   }
   function moveTo(element, animate = true) {
-    track.scrollTo({
-      left: destination(element),
+    scrollTo({
+      top: topOf(element),
       behavior: animate && !reducedMotion.matches ? "smooth" : "instant",
     });
   }
   function moveBy(amount) {
-    moveTo(panels[Math.max(0, Math.min(panels.length - 1, current + amount))]);
+    moveTo(panels[clamp(current + amount)]);
   }
   function followFragment() {
     const target = document.getElementById(location.hash.slice(1));
-    if (target && track.contains(target)) moveTo(target, false);
+    if (target && track.contains(target))
+      requestAnimationFrame(() => moveTo(target, false));
     updatePosition();
   }
+
   previous.addEventListener("click", () => moveBy(-1));
   next.addEventListener("click", () => moveBy(1));
   links.forEach((link) =>
@@ -80,64 +77,35 @@ function initExhibition(track) {
       moveTo(target);
     }),
   );
-  track.addEventListener(
+  addEventListener(
     "scroll",
     () => {
       if (!frame) frame = requestAnimationFrame(() => updatePosition());
       clearTimeout(settle);
-      settle = setTimeout(() => updatePosition(true), 180);
+      settle = setTimeout(() => updatePosition(true), 200);
     },
     { passive: true },
   );
-  track.addEventListener("keydown", (event) => {
-    if (event.target !== track) return;
-    if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) return;
+  addEventListener("keydown", (event) => {
+    // The photo viewer owns the arrow keys while it is open.
+    const element = event.target instanceof Element ? event.target : null;
+    if (lightbox?.open || element?.closest("input, textarea, select")) return;
+    let target = null;
+    if (event.key === "ArrowDown" || event.key === "PageDown")
+      target = current + 1;
+    else if (event.key === "ArrowUp" || event.key === "PageUp")
+      target = current - 1;
+    else if (event.key === "Home") target = 0;
+    else if (event.key === "End") target = panels.length - 1;
+    if (target === null) return;
     event.preventDefault();
-    if (event.key === "Home") moveTo(panels[0]);
-    else if (event.key === "End") moveTo(panels.at(-1));
-    else moveBy(event.key === "ArrowRight" ? 1 : -1);
+    moveTo(panels[clamp(target)]);
   });
-  track.addEventListener(
-    "wheel",
-    (event) => {
-      // Native trackpad/pinch gestures and scrolling inside notes keep their behaviour.
-      if (
-        event.ctrlKey ||
-        Math.abs(event.deltaX) >= Math.abs(event.deltaY) ||
-        event.target.closest("video")
-      )
-        return;
-      const note = event.target.closest(".rail-note");
-      if (
-        note &&
-        ((event.deltaY > 0 &&
-          note.scrollTop + note.clientHeight < note.scrollHeight - 1) ||
-          (event.deltaY < 0 && note.scrollTop > 0))
-      )
-        return;
-      const delta =
-        event.deltaY *
-        (event.deltaMode === 1
-          ? 16
-          : event.deltaMode === 2
-            ? track.clientWidth
-            : 1);
-      if (
-        (delta > 0 &&
-          track.scrollLeft < track.scrollWidth - track.clientWidth - 1) ||
-        (delta < 0 && track.scrollLeft > 1)
-      ) {
-        event.preventDefault();
-        track.scrollLeft += delta;
-      }
-    },
-    { passive: false },
-  );
-  window.addEventListener("hashchange", followFragment);
-  window.addEventListener("resize", () => {
+  addEventListener("hashchange", followFragment);
+  addEventListener("resize", () => {
     moveTo(panels[current], false);
     updatePosition();
   });
-  window.addEventListener("load", followFragment, { once: true });
+  addEventListener("load", followFragment, { once: true });
   followFragment();
 }

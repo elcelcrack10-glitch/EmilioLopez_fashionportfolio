@@ -2,6 +2,40 @@ import { test, expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 import { projects } from "../src/content.mjs";
 
+test("the home cover fills the hero and advances automatically without controls", async ({ page }) => {
+  await page.clock.install();
+  await page.goto("/");
+  const slides = page.locator(".home-slide:not([data-repeat])");
+  await expect(slides).toHaveCount(6);
+    const sources = await slides.locator("img").evaluateAll(images => images.map(image => image.getAttribute("src")));
+    expect(sources).toEqual([1, 7, 2, 5, 8, 6].map(id => `/media/home-cover-${String(id).padStart(3, "0")}.webp`));
+  await expect(page.locator(".home-cover button")).toHaveCount(0);
+  const hero = await page.locator(".home-cover").boundingBox();
+  const image = await slides.first().locator("img").boundingBox();
+  expect(image).toEqual(hero);
+  await expect(slides.first().locator("img")).toHaveCSS("object-fit", "cover");
+  const title = await page.locator("#home-title").boundingBox();
+  expect(title.y).toBeGreaterThanOrEqual(hero.y);
+  expect(title.y + title.height).toBeLessThanOrEqual(hero.y + hero.height);
+  const repeatedSources = await page.locator("[data-repeat] img").evaluateAll(images => images.map(image => image.getAttribute("src")));
+  expect(repeatedSources).toEqual(sources);
+  for (let i = 1; i <= 12; i++) {
+    await page.clock.fastForward(4500);
+    expect(await page.locator(".home-slides").evaluate(el => el.style.transform)).toBe(`translateX(-${(i % 6 || 6) * 100}%)`);
+    await page.clock.runFor(900);
+    await expect(slides.nth(i % 6)).toHaveAttribute("aria-hidden", "false");
+  }
+});
+
+test("the home cover respects reduced motion", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.clock.install();
+  await page.goto("/en/");
+  await page.clock.fastForward(10000);
+  await expect(page.locator(".home-slide").first()).toHaveAttribute("aria-hidden", "false");
+  await expect(page.locator(".home-slides")).toHaveCSS("transition-duration", "0s");
+});
+
 test("archive groups five photos per project and preserves image links across languages", async ({
   page,
 }) => {
@@ -81,38 +115,36 @@ test("reduced motion keeps the dispersed home still", async ({ page }) => {
   ).toBe("");
 });
 
-test("horizontal reading works with buttons, keyboard, wheel and direct photo links", async ({
+test("vertical reading works with buttons, keyboard, wheel and direct photo links", async ({
   page,
 }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/pescadilla/");
-  const track = page.locator(".exhibition-track");
-  const left = () => track.evaluate((e) => e.scrollLeft);
+  const counter = page.locator(".rail-counter");
+  const position = () => page.evaluate(() => Math.round(window.scrollY));
   await expect(page.locator("[data-rail-prev]")).toBeDisabled();
+  await expect(counter).toHaveText("01 / 09");
   await page.locator("[data-rail-next]").click();
-  await expect.poll(left).toBeGreaterThan(100);
-  await expect(page.locator(".rail-counter")).toHaveText("02 / 10");
-  await track.focus();
+  await expect.poll(position).toBeGreaterThan(100);
+  await expect(counter).toHaveText("02 / 09");
   await page.keyboard.press("Home");
-  await expect.poll(left).toBe(0);
-  await page.keyboard.press("ArrowRight");
-  await expect.poll(left).toBeGreaterThan(100);
+  await expect(counter).toHaveText("01 / 09");
+  await page.keyboard.press("ArrowDown");
+  await expect.poll(position).toBeGreaterThan(100);
   await page.keyboard.press("End");
   await expect(page.locator("[data-rail-next]")).toBeDisabled();
   await expect(page.locator("#siguiente")).toBeInViewport();
-  await expect(page.locator(".rail-counter")).toHaveText("10 / 10");
+  await expect(counter).toHaveText("09 / 09");
   await page.keyboard.press("Home");
-  await expect.poll(left).toBe(0);
-  const bounds = await track.boundingBox();
-  await page.mouse.move(bounds.x + 100, bounds.y + 100);
-  await page.mouse.wheel(0, 500);
-  await expect.poll(left).toBeGreaterThan(100);
-  expect(await page.evaluate(() => window.scrollY)).toBe(0);
+  await expect(counter).toHaveText("01 / 09");
+  await page.mouse.move(700, 500);
+  await page.mouse.wheel(0, 1200);
+  await expect.poll(position).toBeGreaterThan(100);
   await page.goto("/pescadilla/#photo-pescadilla-photo-7");
   await expect(page.locator("#photo-pescadilla-photo-7")).toBeInViewport();
 });
 
-test("mobile visitors can swipe the gallery and scroll expanded notes", async ({
+test("mobile visitors scroll the vertical gallery and read expanded notes", async ({
   browser,
 }) => {
   const context = await browser.newContext({
@@ -124,22 +156,18 @@ test("mobile visitors can swipe the gallery and scroll expanded notes", async ({
   const page = await context.newPage();
   try {
     await page.goto("http://localhost:4173/pescadilla/");
-    const track = page.locator(".exhibition-track");
+    const position = () => page.evaluate(() => Math.round(window.scrollY));
+    await expect(page.locator(".rail-image").first()).toBeInViewport();
     const session = await context.newCDPSession(page);
-    const swipe = async (x1, y1, x2, y2) => {
+    const swipe = async (x, from, to) => {
       await session.send("Input.dispatchTouchEvent", {
         type: "touchStart",
-        touchPoints: [{ x: x1, y: y1 }],
+        touchPoints: [{ x, y: from }],
       });
       for (let step = 1; step <= 10; step++) {
         await session.send("Input.dispatchTouchEvent", {
           type: "touchMove",
-          touchPoints: [
-            {
-              x: x1 + ((x2 - x1) * step) / 10,
-              y: y1 + ((y2 - y1) * step) / 10,
-            },
-          ],
+          touchPoints: [{ x, y: from + ((to - from) * step) / 10 }],
         });
         await page.waitForTimeout(20);
       }
@@ -148,25 +176,33 @@ test("mobile visitors can swipe the gallery and scroll expanded notes", async ({
         touchPoints: [],
       });
     };
-    const bounds = await track.boundingBox();
-    await swipe(330, bounds.y + 140, 60, bounds.y + 140);
-    await expect
-      .poll(() => track.evaluate((el) => el.scrollLeft))
-      .toBeGreaterThan(100);
+    await swipe(195, 700, 200);
+    await expect.poll(position).toBeGreaterThan(100);
     await page.goto("http://localhost:4173/pescadilla/#concepto");
     const note = page.locator("#concepto");
     await expect(note).toBeInViewport();
     await note.locator("summary").tap();
-    const box = await note.boundingBox();
-    const before = await note.evaluate((el) => el.scrollTop);
-    await swipe(box.x + 100, box.y + box.height - 40, box.x + 100, box.y + 70);
-    await expect
-      .poll(() => note.evaluate((el) => el.scrollTop))
-      .toBeGreaterThan(before);
-    await expect(note).toBeInViewport({ ratio: 0.9 });
-    expect(await page.evaluate(() => window.scrollY)).toBe(0);
+    await expect(note.locator("details")).toHaveAttribute("open", "");
   } finally {
     await context.close();
+  }
+});
+
+test("only Pescadilla uses the shrimp lightbox background", async ({ page }) => {
+  for (const project of projects) {
+    await page.goto(`/${project.slug}/`);
+    await page.locator("#editorial [data-gallery]").first().focus();
+    await page.keyboard.press("Enter");
+    const dialog = page.getByRole("dialog");
+    await expect(dialog).toBeVisible();
+    const background = await dialog.evaluate(
+      (el) => getComputedStyle(el).backgroundImage,
+    );
+    if (project.slug === "pescadilla") {
+      expect(background).toContain("lightbox-backdrop.webp");
+    } else {
+      expect(background).toBe("none");
+    }
   }
 });
 
@@ -187,26 +223,35 @@ test("gallery supports keyboard and focus return", async ({ page }) => {
   await expect(cover).toBeFocused();
 });
 
-test("lateral concept and credits stay accessible across languages", async ({
+test("project introductions have the title left, concept right and photos below", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  for (const project of projects) {
+    await page.goto(`/${project.slug}/`);
+    const identity = await page.locator(".project-identity").boundingBox();
+    const concept = await page.locator(".project-concept").boundingBox();
+    const photo = await page.locator(".rail-image").first().boundingBox();
+    expect(identity.x + identity.width).toBeLessThan(concept.x);
+    expect(Math.abs(identity.y - concept.y)).toBeLessThan(2);
+    expect(photo.y).toBeGreaterThanOrEqual(
+      Math.max(identity.y + identity.height, concept.y + concept.height),
+    );
+  }
+});
+
+test("the concept and its credits read at the top across languages", async ({
   page,
 }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
-  await page.goto("/feel-marni/");
-  const nav = page.getByRole("navigation", { name: "Dentro del proyecto" });
-  await nav.getByRole("link", { name: "Concepto", exact: true }).click();
-  await expect(page.locator("#concepto")).toBeInViewport();
-  await expect(
-    nav.getByRole("link", { name: "Concepto", exact: true }),
-  ).toHaveAttribute("aria-current", "location");
-  await page.locator("#concepto summary").click();
-  await expect(page.locator("#concepto details")).toHaveAttribute("open", "");
-  await expect(page.locator("#concepto .credits")).toContainText("Luda Pellat");
+  await page.goto("/feel-marni/#concepto");
+  const concept = page.locator("#concepto");
+  await expect(concept).toBeInViewport();
+  await expect(concept.locator(".credits")).not.toBeVisible();
+  await concept.locator("summary").click();
+  await expect(concept.locator("details")).toHaveAttribute("open", "");
+  await expect(concept.locator(".credits")).toContainText("Luda Pellat");
   await page.getByRole("link", { name: "EN", exact: true }).click();
   await expect(page).toHaveURL(/\/en\/feel-marni\/#concepto/);
   await expect(page.locator("#concepto")).toBeInViewport();
-  await expect(
-    page.locator('[data-rail-link][href="#concepto"]'),
-  ).toHaveAttribute("aria-current", "location");
   await page.getByRole("link", { name: "Index", exact: true }).click();
   await expect(page.locator(".archive-piece")).toHaveCount(20);
 });

@@ -22,12 +22,12 @@ const releaseSources = [
   "src/app.js",
   "src/exhibition.js",
   "src/home.js",
+  "src/home-slides.json",
   "scripts/build.mjs",
   "scripts/deployment.mjs",
   "public/media/manifest.json",
 ];
-const revision = process.env.SITE_URL
-  ? createHash("sha256")
+const revision = createHash("sha256")
       .update(
         (
           await Promise.all(
@@ -36,8 +36,7 @@ const revision = process.env.SITE_URL
         ).join("\n"),
       )
       .digest("hex")
-      .slice(0, 12)
-  : "";
+      .slice(0, 12);
 await mkdir(output, { recursive: true });
 await cp("public", output, { recursive: true });
 for (const name of ["style.css", "persona.css", "exhibition.css"]) {
