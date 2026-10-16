@@ -8,6 +8,7 @@
   --page: clamp(20px, 2.2vw, 40px);
   --project-accent: #873d30;
   --contact-bg: #330505;
+  --contact-fg: #ffffff;
   background: var(--paper);
 }
 html:has(.archive-page),
@@ -37,12 +38,12 @@ html:has(.exhibition-page) {
   gap: 32px;
   align-items: center;
   background: var(--contact-bg);
-  color: var(--accent);
+  color: var(--contact-fg);
   padding: clamp(72px, 11vw, 168px) var(--page) clamp(40px, 6vw, 80px);
   border-top: 1px solid rgb(253 61 42 / 0.4);
 }
 :is(.archive-page, .exhibition-page) footer :focus-visible {
-  outline-color: var(--accent);
+  outline-color: var(--contact-fg);
 }
 :is(.archive-page, .exhibition-page) .footer-top .eyebrow {
   display: none;
