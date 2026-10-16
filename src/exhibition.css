@@ -1,12 +1,13 @@
 /* A quiet image archive and a native horizontal reading room. */
 .archive-page,
 .exhibition-page {
-  --paper: #faf9f6;
-  --ink: #292925;
+  --paper: #f3f1ec;
+  --ink: #0b0a0a;
   --muted: #64645d;
   --line: #dddcd4;
   --page: clamp(20px, 2.2vw, 40px);
   --project-accent: #873d30;
+  --contact-bg: #330505;
   background: var(--paper);
 }
 html:has(.archive-page),
@@ -35,9 +36,13 @@ html:has(.exhibition-page) {
   display: flex;
   gap: 32px;
   align-items: center;
-  background: var(--paper);
-  padding: 16px var(--page);
-  border-top: 1px solid var(--line);
+  background: var(--contact-bg);
+  color: var(--accent);
+  padding: clamp(72px, 11vw, 168px) var(--page) clamp(40px, 6vw, 80px);
+  border-top: 1px solid rgb(253 61 42 / 0.4);
+}
+:is(.archive-page, .exhibition-page) footer :focus-visible {
+  outline-color: var(--accent);
 }
 :is(.archive-page, .exhibition-page) .footer-top .eyebrow {
   display: none;
@@ -77,7 +82,7 @@ html:has(.exhibition-page) {
   display: block;
   z-index: 1;
   transform: translate3d(var(--px, 0), var(--py, 0), 0) scale(var(--zoom, 1));
-  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: transform 0.2s var(--ease);
   will-change: transform;
 }
 .archive-piece picture,
@@ -94,12 +99,12 @@ html:has(.exhibition-page) {
   display: flex;
   gap: 8px;
   align-items: baseline;
-  padding: 5px 9px;
+  padding: 4px 8px;
   font-size: 10px;
   letter-spacing: 0.01em;
   white-space: nowrap;
   color: var(--ink);
-  background: rgba(250, 249, 246, 0.88);
+  background: rgba(243, 241, 236, 0.9);
   opacity: 0;
   transform: translateY(6px);
   transition:
@@ -117,7 +122,7 @@ html:has(.exhibition-page) {
 }
 .archive-piece:hover,
 .archive-piece:focus-visible {
-  --zoom: 1.05;
+  --zoom: 1.02;
   z-index: 3;
 }
 .archive-piece:hover .archive-label,
@@ -458,8 +463,7 @@ html:has(.exhibition-page) {
   }
   :is(.archive-page, .exhibition-page) footer {
     flex-wrap: wrap;
-    gap: 8px 24px;
-    padding: 8px var(--page);
+    gap: 16px 24px;
   }
   .archive-page .footer-bottom {
     flex-basis: 100%;
