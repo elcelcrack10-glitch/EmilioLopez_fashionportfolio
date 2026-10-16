@@ -2,6 +2,42 @@ import { test, expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 import { projects } from "../src/content.mjs";
 
+test("the career timeline alternates around a central line and reveals on scroll", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto("/sobre-mi/");
+  const items = page.locator(".timeline-item");
+  await expect(items).toHaveCount(4);
+  await expect(items.first()).toHaveClass(/is-pending/);
+  await expect(page.locator(".timeline-year")).toHaveText(["2022—2023", "2023—", "2023—2025", "2024"]);
+  const timeline = await page.locator(".career-timeline").boundingBox();
+  const center = timeline.x + timeline.width / 2;
+  const cv = page.locator(".timeline-cv");
+  await expect(cv.getByRole("link", { name: /Descargar CV/ })).toHaveAttribute("download", "");
+  const cvBox = await cv.boundingBox();
+  expect(cvBox.y).toBeGreaterThanOrEqual(timeline.y + timeline.height);
+  await expect(page.locator(".biography .bio-label")).toHaveCount(0);
+  for (let i = 0; i < 4; i++) {
+    await items.nth(i).scrollIntoViewIfNeeded();
+    await expect(items.nth(i)).not.toHaveClass(/is-pending/);
+    await expect(items.nth(i).locator(".timeline-content")).toHaveCSS("opacity", "1");
+    const box = await items.nth(i).locator(".timeline-content").boundingBox();
+    if (i % 2) expect(box.x).toBeGreaterThan(center);
+    else expect(box.x + box.width).toBeLessThan(center);
+  }
+});
+
+test("the career timeline remains readable without motion or JavaScript", async ({ browser }) => {
+  for (const javaScriptEnabled of [true, false]) {
+    const context = await browser.newContext({ javaScriptEnabled, reducedMotion: "reduce", viewport: { width: 390, height: 844 } });
+    const page = await context.newPage();
+    await page.goto("http://localhost:4173/en/sobre-mi/");
+    await expect(page.locator(".timeline-item.is-pending")).toHaveCount(0);
+    await expect(page.locator(".timeline-content")).toHaveCount(4);
+    await expect(page.locator(".timeline-content").first()).toHaveCSS("opacity", "1");
+    await context.close();
+  }
+});
+
 test("the home cover fills the hero and advances automatically without controls", async ({ page }) => {
   await page.clock.install();
   await page.goto("/");

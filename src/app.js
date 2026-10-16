@@ -1,5 +1,28 @@
 document.documentElement.classList.add("js");
 
+const timelineItems = [...document.querySelectorAll(".timeline-item")];
+if (timelineItems.length && "IntersectionObserver" in window) {
+  const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(({ target, isIntersecting }) => {
+      if (!isIntersecting) return;
+      target.classList.remove("is-pending");
+      observer.unobserve(target);
+    });
+  }, { threshold: 0.15 });
+  if (!reducedMotion.matches) {
+    timelineItems.forEach((item) => {
+      item.classList.add("is-pending");
+      observer.observe(item);
+    });
+  }
+  reducedMotion.addEventListener("change", () => {
+    if (!reducedMotion.matches) return;
+    observer.disconnect();
+    timelineItems.forEach((item) => item.classList.remove("is-pending"));
+  });
+}
+
 document.querySelectorAll(".languages a").forEach((link) =>
   link.addEventListener("click", () => {
     const url = new URL(link.href);

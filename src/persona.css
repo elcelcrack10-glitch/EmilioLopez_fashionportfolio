@@ -97,6 +97,16 @@ html:has(.persona-page) {
   padding: 72px var(--page) 104px;
   border-top: 1px solid var(--line);
 }
+.about-portrait {
+  grid-column: 1 / -1;
+  width: min(100%, 440px);
+  margin: 0 auto;
+}
+.about-portrait img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
 .persona-page .bio-label {
   padding-top: 6px;
 }
@@ -121,6 +131,15 @@ html:has(.persona-page) {
 .persona-page .bio-label .text-link:hover {
   background: #000;
 }
+.persona-page .bio-copy {
+  grid-column: 2;
+}
+.persona-page .timeline-cv {
+  width: fit-content;
+  margin: 48px auto 0;
+  padding-top: 32px;
+  border-top: 1px solid var(--line);
+}
 .persona-page .bio-copy p {
   font-size: clamp(17px, 1.5vw, 22px);
   line-height: 1.7;
@@ -132,7 +151,7 @@ html:has(.persona-page) {
   margin-bottom: 0;
 }
 
-/* Experience as a quiet index. */
+/* A central timeline with alternating milestones. */
 .persona-page .experience {
   margin: 0;
   padding: 0 var(--page) 128px;
@@ -147,12 +166,85 @@ html:has(.persona-page) {
   font-weight: 500;
   letter-spacing: -0.035em;
 }
-.persona-page .experience-row {
-  border-bottom: 1px solid var(--line);
-  padding: 30px 0;
+.career-timeline {
+  position: relative;
+  list-style: none;
+  margin: 72px auto 0;
+  padding: 24px 0;
+  max-width: 1120px;
 }
-.persona-page .experience-row h3 {
+.career-timeline::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 1px;
+  background: var(--ink);
+  opacity: 0.25;
+}
+.timeline-item {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 80px minmax(0, 1fr);
+  align-items: start;
+  min-height: 260px;
+  padding: 28px 0 80px;
+}
+.timeline-item:last-child {
+  min-height: 0;
+  padding-bottom: 48px;
+}
+.timeline-marker {
+  grid-column: 2;
+  grid-row: 1;
+  justify-self: center;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--ink);
+  border-radius: 50%;
+  background: var(--paper);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  z-index: 1;
+}
+.timeline-content {
+  grid-column: 1;
+  grid-row: 1;
+  text-align: right;
+  padding: 0 28px;
+  transition: opacity 700ms ease, transform 700ms ease;
+}
+.timeline-item:nth-child(even) .timeline-content {
+  grid-column: 3;
+  text-align: left;
+}
+.timeline-year {
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  margin: 0 0 20px;
+}
+.timeline-content h3 {
+  font-size: clamp(25px, 2.8vw, 42px);
   font-weight: 450;
+  letter-spacing: -0.035em;
+  line-height: 1.15;
+  margin: 0 0 20px;
+}
+.timeline-place {
+  font-size: 14px;
+  color: var(--muted);
+}
+.timeline-item.is-pending .timeline-content {
+  opacity: 0;
+  transform: translateY(28px);
+}
+@media (prefers-reduced-motion: reduce) {
+  .timeline-content {
+    transition: none;
+  }
 }
 
 /* Contact in black, closing with a quiet wordmark. */
@@ -233,14 +325,25 @@ html:has(.persona-page) {
   .persona-page .experience {
     padding: 0 var(--page) 72px;
   }
-  .persona-page .experience-row {
-    grid-template-columns: 80px 1fr;
-    gap: 8px 20px;
-    padding: 22px 0;
+  .career-timeline {
+    margin-top: 40px;
   }
-  .persona-page .experience-row > span:last-child {
+  .career-timeline::before {
+    left: 20px;
+  }
+  .timeline-item {
+    grid-template-columns: 40px minmax(0, 1fr);
+    min-height: 220px;
+    padding-bottom: 56px;
+  }
+  .timeline-marker {
+    grid-column: 1;
+  }
+  .timeline-content,
+  .timeline-item:nth-child(even) .timeline-content {
     grid-column: 2;
     text-align: left;
+    padding: 0 0 0 24px;
   }
   .persona-page footer {
     padding-top: 48px;
