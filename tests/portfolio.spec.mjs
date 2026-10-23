@@ -122,6 +122,14 @@ test("the dispersed home reacts to the pointer and keyboard", async ({
   await page.goto("/");
   const piece = page.locator(".archive-piece").first();
   await piece.hover();
+  await expect(piece).toHaveCSS("filter", "none");
+  const other = page.locator(".archive-piece").nth(1);
+  await expect(other).toHaveCSS("filter", "blur(4px)");
+  await expect(other).toHaveCSS("opacity", "0.55");
+  await page.locator(".site-header .wordmark").hover();
+  await expect(other).toHaveCSS("filter", "none");
+  await expect(other).toHaveCSS("opacity", "1");
+  await piece.hover();
   await expect
     .poll(() =>
       piece
