@@ -120,7 +120,7 @@ export function renderer(lang, manifest) {
     const pieces = items
       .map(({ project, photo, index }, i) => {
         const { x, y, w } = positions[i];
-        return `<a class="archive-piece" href="${href(project.slug)}#photo-${photo.id}" data-project="${project.slug}" style="--x:${x}%;--y:${y}%;--w:${w}%" aria-label="${words("Ver", "View")} ${project.title} — ${words("imagen", "image")} ${index + 1}">${img(photo, i < 4, "(max-width: 700px) 44vw, 17vw")}<span class="archive-label" aria-hidden="true">${project.title}<em>${project.year}</em></span></a>`;
+        return `<a class="archive-piece" href="${href(project.slug)}#concepto" data-project="${project.slug}" style="--x:${x}%;--y:${y}%;--w:${w}%" aria-label="${words("Ver", "View")} ${project.title} — ${words("imagen", "image")} ${index + 1}">${img(photo, i < 4, "(max-width: 700px) 44vw, 17vw")}<span class="archive-label" aria-hidden="true">${project.title}<em>${project.year}</em></span></a>`;
       })
       .join("");
     const slides = homeSlides.map((slide, i) => `<div class="home-slide" role="group" aria-roledescription="${words("diapositiva", "slide")}" aria-label="${i + 1} / ${homeSlides.length}"${i ? ' inert aria-hidden="true"' : ""}><img src="${slide.src}" width="${slide.width}" height="${slide.height}" alt="${escape(t(slide.alt))}" ${i ? 'loading="lazy"' : 'loading="eager" fetchpriority="high"'} decoding="async"></div>`).join("");

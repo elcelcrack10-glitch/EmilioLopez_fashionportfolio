@@ -46,7 +46,9 @@ function initExhibition(track) {
         link.setAttribute("aria-current", "location");
       else link.removeAttribute("aria-current");
     });
-    if (saveFragment) setFragment(panels[current].id);
+    if (saveFragment && scrollY >= topOf(track) - 2) {
+      setFragment(panels[current].id);
+    }
     frame = null;
   }
   function moveTo(element, animate = true) {

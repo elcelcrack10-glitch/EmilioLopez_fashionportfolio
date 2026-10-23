@@ -72,7 +72,7 @@ test("the home cover respects reduced motion", async ({ page }) => {
   await expect(page.locator(".home-slides")).toHaveCSS("transition-duration", "0s");
 });
 
-test("archive groups five photos per project and preserves image links across languages", async ({
+test("archive photos lead to project descriptions across languages", async ({
   page,
 }) => {
   await page.goto("/");
@@ -83,6 +83,10 @@ test("archive groups five photos per project and preserves image links across la
       `.archive-piece[data-project="${project.slug}"] img`,
     );
     await expect(images).toHaveCount(5);
+    const links = page.locator(`.archive-piece[data-project="${project.slug}"]`);
+    for (const link of await links.all()) {
+      await expect(link).toHaveAttribute("href", `/${project.slug}/#concepto`);
+    }
     expect(
       new Set(
         await images.evaluateAll((nodes) =>
@@ -99,11 +103,11 @@ test("archive groups five photos per project and preserves image links across la
   await page
     .getByRole("link", { name: "View COLORES — image 3", exact: true })
     .click();
-  await expect(page).toHaveURL(/\/en\/colores\/#photo-colores-photo-3/);
-  const target = page.locator("#photo-colores-photo-3");
+  await expect(page).toHaveURL(/\/en\/colores\/#concepto/);
+  const target = page.locator("#concepto");
   await expect(target).toBeInViewport();
   await page.getByRole("link", { name: "ES", exact: true }).click();
-  await expect(page).toHaveURL(/\/colores\/#photo-colores-photo-3/);
+  await expect(page).toHaveURL(/\/colores\/#concepto/);
   await expect(target).toBeInViewport();
   await page.goto("/colores/");
   await expect(page.locator("#editorial img").first()).toHaveAttribute(
