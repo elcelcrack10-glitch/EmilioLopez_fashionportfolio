@@ -229,8 +229,8 @@ test("mobile visitors scroll the vertical gallery and read expanded notes", asyn
     await page.goto("http://localhost:4173/pescadilla/#concepto");
     const note = page.locator("#concepto");
     await expect(note).toBeInViewport();
-    await note.locator("summary").tap();
-    await expect(note.locator("details")).toHaveAttribute("open", "");
+    await note.locator("details:not(.project-download) > summary").tap();
+    await expect(note.locator("details:not(.project-download)")).toHaveAttribute("open", "");
   } finally {
     await context.close();
   }
@@ -294,9 +294,13 @@ test("the concept and its credits read at the top across languages", async ({
   const concept = page.locator("#concepto");
   await expect(concept).toBeInViewport();
   await expect(concept.locator(".credits")).not.toBeVisible();
-  await concept.locator("summary").click();
-  await expect(concept.locator("details")).toHaveAttribute("open", "");
+  await concept.locator("details:not(.project-download) > summary").click();
+  await expect(concept.locator("details:not(.project-download)")).toHaveAttribute("open", "");
   await expect(concept.locator(".credits")).toContainText("Luda Pellat");
+  const download = concept.locator(".project-download a");
+  await expect(download).toHaveAttribute("download", "");
+  await expect(download).toHaveAttribute("href", "/MARNI-Emilio-Lopez.pdf");
+  await expect(download).toContainText("Descargar PDF");
   await page.getByRole("link", { name: "EN", exact: true }).click();
   await expect(page).toHaveURL(/\/en\/feel-marni\/#concepto/);
   await expect(page.locator("#concepto")).toBeInViewport();

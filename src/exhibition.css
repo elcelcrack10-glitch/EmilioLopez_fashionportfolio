@@ -373,6 +373,39 @@ html:has(.exhibition-page) {
   font-size: 13px;
   margin: 0;
 }
+.project-download {
+  margin-top: 24px;
+  border-top: 1px solid var(--line);
+}
+.project-download-body {
+  padding: 8px 0 20px;
+}
+.project-download-body p {
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--muted);
+  margin: 0 0 16px;
+  max-width: 40em;
+}
+.project-download-body a {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 12px 18px;
+  border: 1px solid var(--ink);
+  color: var(--ink);
+  text-decoration: none;
+  font-size: 13px;
+}
+.project-download-body a:hover {
+  background: var(--ink);
+  color: var(--paper);
+}
+.project-download-body a .file-label {
+  color: inherit;
+  opacity: 0.7;
+}
 /* The concept reads under the project title, above the photographs. */
 .project-concept {
   display: block;
