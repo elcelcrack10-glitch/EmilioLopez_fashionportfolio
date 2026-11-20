@@ -215,7 +215,7 @@ html:has(.persona-page) {
   grid-row: 1;
   text-align: right;
   padding: 0 28px;
-  transition: opacity 700ms ease, transform 700ms ease;
+  transition: transform 700ms ease;
 }
 .timeline-item:nth-child(even) .timeline-content {
   grid-column: 3;
@@ -238,7 +238,6 @@ html:has(.persona-page) {
   color: #5f5e5a;
 }
 .timeline-item.is-pending .timeline-content {
-  opacity: 0;
   transform: translateY(28px);
 }
 @media (prefers-reduced-motion: reduce) {
