@@ -14,10 +14,10 @@ export const pathFor = (slug, lang) =>
   `${lang === "en" ? "/en" : ""}/${slug ? `${slug}/` : ""}`;
 // Project PDFs offered as a download from each project page.
 const projectFiles = {
-  manuela: { file: "MANUELA-Emilio-Lopez.pdf", size: "4,8 MB" },
-  colores: { file: "COLORES-Emilio-Lopez.pdf", size: "4,9 MB" },
-  pescadilla: { file: "PESCADILLA-Emilio-Lopez.pdf", size: "7,5 MB" },
-  "feel-marni": { file: "MARNI-Emilio-Lopez.pdf", size: "3,3 MB" },
+  manuela: { file: "MANUELA-Emilio-Lopez.pdf", size: "67,5 MB" },
+  colores: { file: "COLORES-Emilio-Lopez.pdf", size: "68,1 MB" },
+  pescadilla: { file: "PESCADILLA-Emilio-Lopez.pdf", size: "83,2 MB" },
+  "feel-marni": { file: "MARNI-Emilio-Lopez.pdf", size: "44,8 MB" },
 };
 // A vector arrow: the ↗ glyph renders as an emoji on iOS.
 const arrow =
