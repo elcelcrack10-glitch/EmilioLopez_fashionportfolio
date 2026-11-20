@@ -135,10 +135,10 @@ html:has(.persona-page) {
   margin-top: 0;
 }
 .persona-page .download-note {
-  margin-top: 14px;
-  font-size: 11px;
+  margin-top: 16px;
+  font-size: 12px;
   line-height: 1.5;
-  color: #5f5e5a;
+  color: #3f3e3a;
 }
 .persona-page .bio-label .text-link .file-label {
   color: #b9b7ae;
