@@ -13,6 +13,8 @@ test("the career timeline alternates around a central line and reveals on scroll
   const center = timeline.x + timeline.width / 2;
   const cv = page.locator(".timeline-cv");
   await expect(cv.getByRole("link", { name: /Descargar CV/ })).toHaveAttribute("download", "");
+  await expect(cv.getByRole("link", { name: /Descargar portfolio/ })).toHaveAttribute("href", "/Emilio-Lopez-Portfolio.pdf");
+  await expect(cv.getByRole("link", { name: /Descargar portfolio/ })).toHaveAttribute("download", "");
   const cvBox = await cv.boundingBox();
   expect(cvBox.y).toBeGreaterThanOrEqual(timeline.y + timeline.height);
   await expect(page.locator(".biography .bio-label")).toHaveCount(0);

@@ -125,6 +125,15 @@ html:has(.persona-page) {
   text-decoration: none;
   border: 0;
 }
+.persona-page .download-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 28px;
+}
+.persona-page .download-actions .text-link {
+  margin-top: 0;
+}
 .persona-page .bio-label .text-link .file-label {
   color: #b9b7ae;
 }
