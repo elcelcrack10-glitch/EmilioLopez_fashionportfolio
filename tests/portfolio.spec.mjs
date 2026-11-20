@@ -15,6 +15,7 @@ test("the career timeline alternates around a central line and reveals on scroll
   await expect(cv.getByRole("link", { name: /Descargar CV/ })).toHaveAttribute("download", "");
   await expect(cv.getByRole("link", { name: /Descargar portfolio/ })).toHaveAttribute("href", "/Emilio-Lopez-Portfolio.pdf");
   await expect(cv.getByRole("link", { name: /Descargar portfolio/ })).toHaveAttribute("download", "");
+  await expect(cv.locator(".download-note")).toContainText("Recomendación");
   const cvBox = await cv.boundingBox();
   expect(cvBox.y).toBeGreaterThanOrEqual(timeline.y + timeline.height);
   await expect(page.locator(".biography .bio-label")).toHaveCount(0);
