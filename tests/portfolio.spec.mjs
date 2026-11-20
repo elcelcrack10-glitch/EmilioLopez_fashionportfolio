@@ -205,7 +205,9 @@ test("mobile visitors scroll the vertical gallery and read expanded notes", asyn
   try {
     await page.goto("http://localhost:4173/pescadilla/");
     const position = () => page.evaluate(() => Math.round(window.scrollY));
-    await expect(page.locator(".rail-image").first()).toBeInViewport();
+    const firstPhoto = page.locator(".rail-image").first();
+    await firstPhoto.scrollIntoViewIfNeeded();
+    await expect(firstPhoto).toBeInViewport();
     const session = await context.newCDPSession(page);
     const swipe = async (x, from, to) => {
       await session.send("Input.dispatchTouchEvent", {
@@ -306,6 +308,17 @@ test("the concept and its credits read at the top across languages", async ({
   await expect(page.locator("#concepto")).toBeInViewport();
   await page.getByRole("link", { name: "Index", exact: true }).click();
   await expect(page.locator(".archive-piece")).toHaveCount(20);
+});
+
+test("Pescadilla offers both the dossier and the artbook for download", async ({ page }) => {
+  await page.goto("/pescadilla/");
+  const links = page.locator(".project-download a");
+  await expect(links).toHaveCount(2);
+  await expect(links.nth(0)).toHaveAttribute("href", "/PESCADILLA-Emilio-Lopez.pdf");
+  await expect(links.nth(0)).toContainText("Dossier final");
+  await expect(links.nth(1)).toHaveAttribute("href", "/PESCADILLA-Artbook-Emilio-Lopez.pdf");
+  await expect(links.nth(1)).toContainText("Artbook");
+  for (const link of await links.all()) await expect(link).toHaveAttribute("download", "");
 });
 
 test("contact, CV and film work without automatic video downloads", async ({
